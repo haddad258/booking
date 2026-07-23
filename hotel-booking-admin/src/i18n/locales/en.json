@@ -1,0 +1,58 @@
+{
+  "app": { "name": "Stayly Admin" },
+  "nav": {
+    "dashboard": "Dashboard",
+    "bookings": "Bookings",
+    "calendar": "Calendar",
+    "hotels": "Hotels",
+    "chalets": "Chalets",
+    "amenities": "Amenities",
+    "customers": "Customers",
+    "reviews": "Reviews",
+    "reports": "Reports",
+    "admins": "Admins",
+    "roles": "Roles & Permissions",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "auth": {
+    "login": "Log in",
+    "email": "Email address",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "loginCta": "Log in to your account",
+    "loginSubtitle": "Enter your credentials to access the admin dashboard.",
+    "resetPassword": "Reset password",
+    "sendResetLink": "Send reset link",
+    "newPassword": "New password",
+    "backToLogin": "Back to log in"
+  },
+  "common": {
+    "search": "Search",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "status": "Status",
+    "actions": "Actions",
+    "loading": "Loading…",
+    "noResults": "Nothing here yet",
+    "confirmDelete": "This can't be undone. Delete anyway?",
+    "createdSuccess": "Created successfully",
+    "updatedSuccess": "Updated successfully",
+    "deletedSuccess": "Deleted successfully"
+  },
+  "dashboard": {
+    "overview": "Overview",
+    "totalHotels": "Hotels",
+    "totalChalets": "Chalets",
+    "totalCustomers": "Customers",
+    "totalBookings": "Bookings",
+    "totalRevenue": "Revenue",
+    "pendingReviews": "Pending reviews",
+    "revenueChart": "Revenue, last 30 days",
+    "bookingsByStatus": "Bookings by status",
+    "occupancyRate": "Occupancy rate"
+  }
+}

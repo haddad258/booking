@@ -1,0 +1,58 @@
+{
+  "app": { "name": "ستايلي أدمن" },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "bookings": "الحجوزات",
+    "calendar": "التقويم",
+    "hotels": "الفنادق",
+    "chalets": "الشاليهات",
+    "amenities": "المرافق",
+    "customers": "العملاء",
+    "reviews": "التقييمات",
+    "reports": "التقارير",
+    "admins": "المسؤولون",
+    "roles": "الأدوار والصلاحيات",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "loginCta": "سجّل الدخول إلى حسابك",
+    "loginSubtitle": "أدخل بياناتك للوصول إلى لوحة التحكم.",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "sendResetLink": "إرسال رابط إعادة التعيين",
+    "newPassword": "كلمة المرور الجديدة",
+    "backToLogin": "العودة لتسجيل الدخول"
+  },
+  "common": {
+    "search": "بحث",
+    "add": "إضافة",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "save": "حفظ التغييرات",
+    "cancel": "إلغاء",
+    "status": "الحالة",
+    "actions": "إجراءات",
+    "loading": "جارٍ التحميل…",
+    "noResults": "لا يوجد شيء هنا بعد",
+    "confirmDelete": "لا يمكن التراجع عن هذا. هل تريد الحذف؟",
+    "createdSuccess": "تم الإنشاء بنجاح",
+    "updatedSuccess": "تم التحديث بنجاح",
+    "deletedSuccess": "تم الحذف بنجاح"
+  },
+  "dashboard": {
+    "overview": "نظرة عامة",
+    "totalHotels": "الفنادق",
+    "totalChalets": "الشاليهات",
+    "totalCustomers": "العملاء",
+    "totalBookings": "الحجوزات",
+    "totalRevenue": "الإيرادات",
+    "pendingReviews": "تقييمات بانتظار المراجعة",
+    "revenueChart": "الإيرادات، آخر 30 يومًا",
+    "bookingsByStatus": "الحجوزات حسب الحالة",
+    "occupancyRate": "معدل الإشغال"
+  }
+}

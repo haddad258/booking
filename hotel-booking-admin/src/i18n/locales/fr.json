@@ -1,0 +1,58 @@
+{
+  "app": { "name": "Stayly Admin" },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "bookings": "Réservations",
+    "calendar": "Calendrier",
+    "hotels": "Hôtels",
+    "chalets": "Chalets",
+    "amenities": "Équipements",
+    "customers": "Clients",
+    "reviews": "Avis",
+    "reports": "Rapports",
+    "admins": "Administrateurs",
+    "roles": "Rôles et permissions",
+    "settings": "Paramètres",
+    "logout": "Se déconnecter"
+  },
+  "auth": {
+    "login": "Connexion",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "loginCta": "Connectez-vous à votre compte",
+    "loginSubtitle": "Entrez vos identifiants pour accéder au tableau de bord.",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "sendResetLink": "Envoyer le lien",
+    "newPassword": "Nouveau mot de passe",
+    "backToLogin": "Retour à la connexion"
+  },
+  "common": {
+    "search": "Rechercher",
+    "add": "Ajouter",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "status": "Statut",
+    "actions": "Actions",
+    "loading": "Chargement…",
+    "noResults": "Rien à afficher",
+    "confirmDelete": "Cette action est irréversible. Supprimer quand même ?",
+    "createdSuccess": "Créé avec succès",
+    "updatedSuccess": "Mis à jour avec succès",
+    "deletedSuccess": "Supprimé avec succès"
+  },
+  "dashboard": {
+    "overview": "Vue d'ensemble",
+    "totalHotels": "Hôtels",
+    "totalChalets": "Chalets",
+    "totalCustomers": "Clients",
+    "totalBookings": "Réservations",
+    "totalRevenue": "Revenus",
+    "pendingReviews": "Avis en attente",
+    "revenueChart": "Revenus, 30 derniers jours",
+    "bookingsByStatus": "Réservations par statut",
+    "occupancyRate": "Taux d'occupation"
+  }
+}
