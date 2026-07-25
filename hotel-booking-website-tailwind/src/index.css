@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  /* Deep sage/pine luxury-chalet palette, inspired by shaleh-ak.com's #426d5e */
+  --color-brand-50: #f2f6f4;
+  --color-brand-100: #dfe9e4;
+  --color-brand-200: #bfd3c8;
+  --color-brand-300: #96b5a5;
+  --color-brand-400: #6c927f;
+  --color-brand-500: #497560;
+  --color-brand-600: #3b6252;
+  --color-brand-700: #2f4f43;
+  --color-brand-800: #253f36;
+  --color-brand-900: #1c322b;
+
+  --color-gold-50: #fbf7ef;
+  --color-gold-100: #f4ead2;
+  --color-gold-200: #e9d3a3;
+  --color-gold-300: #dcb96f;
+  --color-gold-400: #c9a66b;
+  --color-gold-500: #ba9152;
+  --color-gold-600: #997743;
+  --color-gold-700: #7a5f38;
+
+  --color-ink: #1c2620;
+  --color-canvas: #faf8f4;
+
+  --font-display: "Cormorant Garamond", serif;
+  --font-sans: "Manrope", -apple-system, "Segoe UI", sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+  }
+  ::selection {
+    @apply bg-gold-200 text-ink;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(250, 248, 244, 0.75);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+  }
+  .hover-lift {
+    transition: transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px -16px rgba(28,38,32,0.22);
+  }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 600ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}

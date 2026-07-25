@@ -1,0 +1,109 @@
+{
+  "app": { "name": "Stayly" },
+  "nav": {
+    "hotels": "Hôtels",
+    "chalets": "Chalets",
+    "about": "À propos",
+    "blog": "Blog",
+    "contact": "Contact",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "account": "Mon compte",
+    "myBookings": "Mes réservations",
+    "favorites": "Favoris",
+    "logout": "Se déconnecter"
+  },
+  "home": {
+    "heroTitle": "Trouvez votre prochain séjour",
+    "heroSubtitle": "Hôtels et chalets de montagne triés sur le volet, réservés en quelques minutes.",
+    "searchDestination": "Où allez-vous ?",
+    "searchCheckIn": "Arrivée",
+    "searchCheckOut": "Départ",
+    "searchGuests": "Voyageurs",
+    "searchCta": "Rechercher",
+    "featuredHotels": "Hôtels à la une",
+    "featuredChalets": "Chalets à la une",
+    "popularDestinations": "Destinations populaires",
+    "testimonials": "Ce que disent nos voyageurs",
+    "newsletterTitle": "Recevez nos meilleures offres par e-mail",
+    "newsletterCta": "S'abonner"
+  },
+  "listing": {
+    "filters": "Filtres",
+    "priceRange": "Fourchette de prix",
+    "rating": "Note",
+    "amenities": "Équipements",
+    "guests": "Voyageurs",
+    "noResults": "Aucun résultat pour cette recherche.",
+    "perNight": "/ nuit",
+    "viewDetails": "Voir les détails"
+  },
+  "detail": {
+    "amenities": "Équipements",
+    "reviews": "Avis",
+    "location": "Emplacement",
+    "similar": "Vous aimerez aussi",
+    "bookNow": "Réserver",
+    "selectRoom": "Choisir une chambre",
+    "writeReview": "Laisser un avis"
+  },
+  "booking": {
+    "step1": "Informations voyageur",
+    "step2": "Paiement",
+    "step3": "Confirmation",
+    "checkIn": "Arrivée",
+    "checkOut": "Départ",
+    "adults": "Adultes",
+    "children": "Enfants",
+    "total": "Total",
+    "confirmBooking": "Confirmer la réservation",
+    "bookingConfirmed": "Réservation confirmée !",
+    "bookingNumber": "Numéro de réservation"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "Créer votre compte",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "phone": "Téléphone",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Pas encore de compte ?",
+    "haveAccount": "Déjà un compte ?",
+    "resetPassword": "Réinitialiser le mot de passe"
+  },
+  "account": {
+    "dashboard": "Tableau de bord",
+    "bookings": "Réservations",
+    "favorites": "Favoris",
+    "profile": "Profil",
+    "password": "Mot de passe",
+    "changePassword": "Changer le mot de passe"
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Des questions sur un séjour ou une réservation ? Nous sommes là pour vous aider.",
+    "name": "Votre nom",
+    "email": "E-mail",
+    "message": "Message",
+    "send": "Envoyer",
+    "sent": "Merci — nous vous répondrons rapidement."
+  },
+  "footer": {
+    "company": "Entreprise",
+    "support": "Support",
+    "legal": "Mentions légales",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "cookies": "Cookies",
+    "rights": "Tous droits réservés."
+  },
+  "common": {
+    "loading": "Chargement…",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "readMore": "Lire la suite"
+  }
+}
