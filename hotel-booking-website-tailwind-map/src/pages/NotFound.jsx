@@ -1,0 +1,12 @@
+import { Link } from 'react-router-dom';
+import Button from '../components/ui/Button';
+
+export default function NotFound() {
+  return (
+    <div className="mx-auto max-w-md px-4 py-24 text-center">
+      <p className="font-display text-6xl font-bold text-gold-500">404</p>
+      <p className="mb-6 mt-2 text-ink/60">This page doesn't exist.</p>
+      <Button to="/">Back home</Button>
+    </div>
+  );
+}

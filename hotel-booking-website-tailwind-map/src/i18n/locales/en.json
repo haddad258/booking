@@ -1,0 +1,109 @@
+{
+  "app": { "name": "Stayly" },
+  "nav": {
+    "hotels": "Hotels",
+    "chalets": "Chalets",
+    "about": "About",
+    "blog": "Blog",
+    "contact": "Contact",
+    "login": "Log in",
+    "register": "Sign up",
+    "account": "My account",
+    "myBookings": "My bookings",
+    "favorites": "Favorites",
+    "logout": "Log out"
+  },
+  "home": {
+    "heroTitle": "Find your next stay",
+    "heroSubtitle": "Handpicked hotels and mountain chalets, booked in minutes.",
+    "searchDestination": "Where to?",
+    "searchCheckIn": "Check-in",
+    "searchCheckOut": "Check-out",
+    "searchGuests": "Guests",
+    "searchCta": "Search",
+    "featuredHotels": "Featured hotels",
+    "featuredChalets": "Featured chalets",
+    "popularDestinations": "Popular destinations",
+    "testimonials": "What our guests say",
+    "newsletterTitle": "Get away-worthy deals in your inbox",
+    "newsletterCta": "Subscribe"
+  },
+  "listing": {
+    "filters": "Filters",
+    "priceRange": "Price range",
+    "rating": "Rating",
+    "amenities": "Amenities",
+    "guests": "Guests",
+    "noResults": "No properties match your search yet.",
+    "perNight": "/ night",
+    "viewDetails": "View details"
+  },
+  "detail": {
+    "amenities": "Amenities",
+    "reviews": "Reviews",
+    "location": "Location",
+    "similar": "You might also like",
+    "bookNow": "Book now",
+    "selectRoom": "Select a room",
+    "writeReview": "Write a review"
+  },
+  "booking": {
+    "step1": "Guest details",
+    "step2": "Payment",
+    "step3": "Confirmation",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "adults": "Adults",
+    "children": "Children",
+    "total": "Total",
+    "confirmBooking": "Confirm booking",
+    "bookingConfirmed": "Booking confirmed!",
+    "bookingNumber": "Booking number"
+  },
+  "auth": {
+    "login": "Log in",
+    "register": "Create your account",
+    "email": "Email address",
+    "password": "Password",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "phone": "Phone",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "resetPassword": "Reset password"
+  },
+  "account": {
+    "dashboard": "Dashboard",
+    "bookings": "Bookings",
+    "favorites": "Favorites",
+    "profile": "Profile",
+    "password": "Password",
+    "changePassword": "Change password"
+  },
+  "contact": {
+    "title": "Get in touch",
+    "subtitle": "Questions about a stay or a reservation? We're here to help.",
+    "name": "Your name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send message",
+    "sent": "Thanks — we'll get back to you shortly."
+  },
+  "footer": {
+    "company": "Company",
+    "support": "Support",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "cookies": "Cookies",
+    "rights": "All rights reserved."
+  },
+  "common": {
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "readMore": "Read more"
+  }
+}
