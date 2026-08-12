@@ -4,7 +4,7 @@ const router = express.Router();
 const chaletController = require('../controllers/chalet.controller');
 const { authenticate, requireAdmin } = require('../middleware/auth.middleware');
 const { requirePermission } = require('../middleware/rbac.middleware');
-const { upload, uploadTo } = require('../middleware/upload.middleware');
+const { upload, uploadTo, verifyMagicBytes } = require('../middleware/upload.middleware');
 const validate = require('../middleware/validate.middleware');
 const {
   createChaletRules,
@@ -32,6 +32,7 @@ router.post(
   validate,
   uploadTo('chalets'),
   upload.array('images', 10),
+  verifyMagicBytes,
   chaletController.uploadImages
 );
 router.delete('/:id/images/:imageId', requirePermission('chalets.update'), chaletController.removeImage);

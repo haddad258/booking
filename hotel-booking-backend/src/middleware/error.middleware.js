@@ -28,6 +28,9 @@ function normalizeError(err) {
   if (err.name === 'MulterError') {
     return ApiError.badRequest(`File upload error: ${err.message}`);
   }
+  if (err.message === 'Not allowed by CORS') {
+    return new ApiError(403, 'This origin is not permitted to access the API');
+  }
 
   return ApiError.internal(err.message || 'Internal Server Error');
 }

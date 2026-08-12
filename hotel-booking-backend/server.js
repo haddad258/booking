@@ -1,4 +1,8 @@
 require('dotenv').config();
+const validateEnv = require('./src/config/validateEnv');
+
+validateEnv(); // fail fast on missing/weak secrets before touching the DB or app
+
 const app = require('./src/app');
 const db = require('./src/config/database');
 const logger = require('./src/utils/logger');

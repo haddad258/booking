@@ -11,8 +11,8 @@ import Spinner from '../components/ui/Spinner';
 import chaletService from '../services/chalet.service';
 import reviewService from '../services/review.service';
 import useFavorites from '../hooks/useFavorites';
+import { resolveImageUrl } from '../lib/media';
 
-const API_ORIGIN = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1').replace(/\/api\/v1$/, '');
 const PLACEHOLDER = 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=80&auto=format&fit=crop';
 
 export default function ChaletDetail() {
@@ -42,7 +42,7 @@ export default function ChaletDetail() {
     return <div className="flex justify-center py-24"><Spinner className="h-8 w-8" /></div>;
   }
 
-  const cover = chalet.images?.[0]?.url ? `${API_ORIGIN}${chalet.images[0].url}` : PLACEHOLDER;
+  const cover = resolveImageUrl(chalet.images?.[0]?.url, PLACEHOLDER);
   const gallery = chalet.images?.length ? chalet.images.slice(1, 5) : [null, null, null, null];
 
   return (
@@ -72,7 +72,11 @@ export default function ChaletDetail() {
         <div className="grid h-full grid-cols-2 gap-2">
           {gallery.slice(0, 4).map((img, idx) => (
             <div key={idx} className="h-full overflow-hidden rounded-2xl">
-              <img src={img?.url ? `${API_ORIGIN}${img.url}` : PLACEHOLDER} alt="" className="h-full w-full object-cover" />
+              <img
+                src={resolveImageUrl(img?.url, PLACEHOLDER)}
+                alt={`${chalet.name} — photo ${idx + 2}`}
+                className="h-full w-full object-cover"
+              />
             </div>
           ))}
         </div>

@@ -2,8 +2,7 @@ import { Box, Button, IconButton, ImageList, ImageListItem, ImageListItemBar } f
 import UploadIcon from '@mui/icons-material/CloudUploadOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineRounded';
 import { useRef } from 'react';
-
-const API_ORIGIN = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1').replace(/\/api\/v1$/, '');
+import { resolveImageUrl } from '../lib/media';
 
 export default function ImageUploader({ images = [], onUpload, onRemove, uploading }) {
   const inputRef = useRef(null);
@@ -34,9 +33,9 @@ export default function ImageUploader({ images = [], onUpload, onRemove, uploadi
 
       {images.length > 0 && (
         <ImageList cols={4} rowHeight={100} gap={8}>
-          {images.map((img) => (
+          {images.map((img, index) => (
             <ImageListItem key={img.id} sx={{ borderRadius: 1, overflow: 'hidden' }}>
-              <img src={`${API_ORIGIN}${img.url}`} alt="" style={{ height: 100, objectFit: 'cover' }} />
+              <img src={resolveImageUrl(img.url)} alt={`Gallery image ${index + 1}`} style={{ height: 100, objectFit: 'cover' }} />
               <ImageListItemBar
                 sx={{ background: 'rgba(0,0,0,0.4)' }}
                 position="top"

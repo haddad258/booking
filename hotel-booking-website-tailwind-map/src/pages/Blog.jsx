@@ -44,7 +44,7 @@ export default function Blog() {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((post) => (
           <RouterLink key={post.slug} to={`/blog/${post.slug}`} className="hover-lift block overflow-hidden rounded-2xl border border-brand-800/10 bg-white">
-            <div className="h-44 overflow-hidden"><img src={post.image} alt="" className="h-full w-full object-cover" /></div>
+            <div className="h-44 overflow-hidden"><img src={post.image} alt={post.title} className="h-full w-full object-cover" /></div>
             <div className="p-4">
               <Badge color="gold" className="mb-2">{post.category}</Badge>
               <h3 className="font-display mb-1 text-lg font-semibold text-ink">{post.title}</h3>

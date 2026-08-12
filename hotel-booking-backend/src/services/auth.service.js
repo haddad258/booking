@@ -103,7 +103,12 @@ async function forgotPassword({ email, type }) {
   // the controller decides the exact response message.
   if (!user) return;
 
-  const token = signResetToken({ sub: user.id, type });
+  // Embed a fingerprint of the current password_changed_at value. If the
+  // password changes by any means before this token is used, the
+  // fingerprint on file no longer matches and the token is rejected —
+  // making every reset token single-use in practice, not just time-limited.
+  const pwv = user.password_changed_at ? new Date(user.password_changed_at).getTime() : 0;
+  const token = signResetToken({ sub: user.id, type, pwv });
   const baseUrl = type === 'admin' ? adminUrl : clientUrl;
   const resetUrl = `${baseUrl}/reset-password?token=${token}`;
 
@@ -128,8 +133,15 @@ async function resetPassword({ token, password, type }) {
   const user = await db(table).where({ id: payload.sub }).first();
   if (!user) throw ApiError.badRequest('Invalid reset token');
 
+  const currentPwv = user.password_changed_at ? new Date(user.password_changed_at).getTime() : 0;
+  if (payload.pwv !== currentPwv) {
+    throw ApiError.badRequest('This reset link has already been used. Please request a new one.');
+  }
+
   const hashed = await hashPassword(password);
-  await db(table).where({ id: user.id }).update({ password: hashed, refresh_token: null });
+  await db(table)
+    .where({ id: user.id })
+    .update({ password: hashed, refresh_token: null, password_changed_at: db.fn.now() });
 }
 
 module.exports = {

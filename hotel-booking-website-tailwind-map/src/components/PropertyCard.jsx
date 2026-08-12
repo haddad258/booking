@@ -4,13 +4,13 @@ import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
 import Rating from './ui/Rating';
+import { resolveImageUrl } from '../lib/media';
 
-const API_ORIGIN = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1').replace(/\/api\/v1$/, '');
 const PLACEHOLDER = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80&auto=format&fit=crop';
 
 export default function PropertyCard({ property, type, isFavorite, onToggleFavorite }) {
   const { t } = useTranslation();
-  const coverImage = property.images?.[0]?.url ? `${API_ORIGIN}${property.images[0].url}` : PLACEHOLDER;
+  const coverImage = resolveImageUrl(property.images?.[0]?.url, PLACEHOLDER);
   const detailPath = type === 'hotel' ? `/hotels/${property.id}` : `/chalets/${property.id}`;
 
   return (

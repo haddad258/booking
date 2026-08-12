@@ -27,7 +27,7 @@ export default function BlogDetail() {
       <Badge color="gold" className="mb-3">{post.category}</Badge>
       <h1 className="font-display mb-2 text-3xl font-semibold text-ink sm:text-4xl">{post.title}</h1>
       <p className="mb-6 text-sm text-ink/50">{format(new Date(post.date), 'MMMM d, yyyy')}</p>
-      <div className="mb-8 h-72 overflow-hidden rounded-2xl sm:h-96"><img src={post.image} alt="" className="h-full w-full object-cover" /></div>
+      <div className="mb-8 h-72 overflow-hidden rounded-2xl sm:h-96"><img src={post.image} alt={post.title} className="h-full w-full object-cover" /></div>
       <p className="whitespace-pre-line leading-8 text-ink/80">{post.content}</p>
     </div>
   );

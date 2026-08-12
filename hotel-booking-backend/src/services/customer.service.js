@@ -54,7 +54,9 @@ async function changePassword(id, currentPassword, newPassword) {
   if (!valid) throw ApiError.badRequest('Current password is incorrect');
 
   const hashed = await hashPassword(newPassword);
-  await db('customers').where({ id }).update({ password: hashed, refresh_token: null });
+  await db('customers')
+    .where({ id })
+    .update({ password: hashed, refresh_token: null, password_changed_at: db.fn.now() });
 }
 
 async function updateStatus(id, status) {

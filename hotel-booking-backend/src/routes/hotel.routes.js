@@ -4,7 +4,7 @@ const router = express.Router();
 const hotelController = require('../controllers/hotel.controller');
 const { authenticate, requireAdmin } = require('../middleware/auth.middleware');
 const { requirePermission } = require('../middleware/rbac.middleware');
-const { upload, uploadTo } = require('../middleware/upload.middleware');
+const { upload, uploadTo, verifyMagicBytes } = require('../middleware/upload.middleware');
 const validate = require('../middleware/validate.middleware');
 const {
   createHotelRules,
@@ -33,6 +33,7 @@ router.post(
   validate,
   uploadTo('hotels'),
   upload.array('images', 10),
+  verifyMagicBytes,
   hotelController.uploadImages
 );
 router.delete('/:id/images/:imageId', requirePermission('hotels.update'), hotelController.removeImage);
