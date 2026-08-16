@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Box, Typography, DialogActions, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 export default function ConfirmDialog({ open, title, message, onConfirm, onCancel, loading }) {
@@ -7,7 +7,13 @@ export default function ConfirmDialog({ open, title, message, onConfirm, onCance
     <Dialog open={open} onClose={onCancel} maxWidth="xs" fullWidth>
       <DialogTitle>{title || t('common.delete')}</DialogTitle>
       <DialogContent>
-        <DialogContentText>{message || t('common.confirmDelete')}</DialogContentText>
+        <Box sx={{ color: 'text.secondary' }}>
+          {typeof message === 'string' || message === undefined ? (
+            <Typography color="text.secondary">{message || t('common.confirmDelete')}</Typography>
+          ) : (
+            message
+          )}
+        </Box>
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>
         <Button onClick={onCancel} disabled={loading}>

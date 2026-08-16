@@ -23,7 +23,7 @@ const app = express();
 // ADMIN_URL, and an optional comma-separated CORS_ORIGINS for anything else
 // (see .env.example). Local dev ports are still allowed by default so
 // `npm run dev` keeps working with zero config.
-const DEV_ORIGINS = ['http://localhost:3000','http://localhost:5000', 'http://localhost:3001', 'http://localhost:5173'];
+const DEV_ORIGINS = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173'];
 const allowedOrigins = [...new Set([clientUrl, adminUrl, ...DEV_ORIGINS, ...corsOrigins])];
 
 app.use(helmet());

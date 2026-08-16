@@ -108,6 +108,7 @@ export default function Admins() {
         onSearch={table.onSearch}
         loading={table.loading}
         searchPlaceholder="Search admins…"
+        emptyAction={{ label: 'Add your first admin', onClick: openCreate }}
       />
 
       <EntityDialog

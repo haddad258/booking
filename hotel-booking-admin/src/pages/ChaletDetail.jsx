@@ -4,6 +4,7 @@ import { Box, Paper, Typography, Grid, Stack, Button, CircularProgress, Chip } f
 import ArrowBackIcon from '@mui/icons-material/ArrowBackRounded';
 import PageHeader from '../components/PageHeader';
 import ImageUploader from '../components/ImageUploader';
+import LocationMapPicker from '../components/LocationMapPicker';
 import useToast from '../hooks/useToast';
 import chaletService from '../services/chalet.service';
 
@@ -14,11 +15,14 @@ export default function ChaletDetail() {
   const [chalet, setChalet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
+  const [savingLocation, setSavingLocation] = useState(false);
 
   const load = async () => {
     setLoading(true);
     const data = await chaletService.getById(id);
     setChalet(data);
+    setLocation({ latitude: data.latitude, longitude: data.longitude });
     setLoading(false);
   };
 
@@ -46,6 +50,29 @@ export default function ChaletDetail() {
       load();
     } catch (err) {
       toast.error(err);
+    }
+  };
+
+  const handleSetCover = async (imageId) => {
+    try {
+      await chaletService.setCoverImage(id, imageId);
+      toast.success('Cover image updated');
+      load();
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+
+  const handleSaveLocation = async () => {
+    setSavingLocation(true);
+    try {
+      await chaletService.update(id, location);
+      toast.success('Location saved');
+      load();
+    } catch (err) {
+      toast.error(err);
+    } finally {
+      setSavingLocation(false);
     }
   };
 
@@ -79,9 +106,33 @@ export default function ChaletDetail() {
           </Paper>
         </Grid>
         <Grid item xs={12} md={5}>
-          <Paper elevation={0} sx={{ p: 2.5 }}>
+          <Paper elevation={0} sx={{ p: 2.5, mb: 2 }}>
             <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>Gallery</Typography>
-            <ImageUploader images={chalet.images} onUpload={handleUpload} onRemove={handleRemoveImage} uploading={uploading} />
+            <ImageUploader
+              images={chalet.images}
+              onUpload={handleUpload}
+              onRemove={handleRemoveImage}
+              onSetCover={handleSetCover}
+              uploading={uploading}
+            />
+          </Paper>
+
+          <Paper elevation={0} sx={{ p: 2.5 }}>
+            <LocationMapPicker
+              latitude={location.latitude}
+              longitude={location.longitude}
+              onChange={setLocation}
+            />
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              sx={{ mt: 1.5 }}
+              disabled={savingLocation || (location.latitude === chalet.latitude && location.longitude === chalet.longitude)}
+              onClick={handleSaveLocation}
+            >
+              Save location
+            </Button>
           </Paper>
         </Grid>
       </Grid>

@@ -18,7 +18,8 @@ const update = catchAsync(async (req, res) => {
 });
 
 const remove = catchAsync(async (req, res) => {
-  await amenityService.deleteAmenity(req.params.id);
+  const force = req.query.force === 'true' || req.query.force === '1';
+  await amenityService.deleteAmenity(req.params.id, force);
   ApiResponse.send(res, { message: 'Amenity deleted' });
 });
 

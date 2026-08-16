@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { TextField, MenuItem, IconButton, Stack, Box, CircularProgress } from '@mui/material';
+import { TextField, MenuItem, IconButton, Stack, Chip, Alert } from '@mui/material';
 import EditIcon from '@mui/icons-material/EditOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineRounded';
 import PageHeader from '../components/PageHeader';
@@ -20,6 +20,7 @@ export default function Amenities() {
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [deleteError, setDeleteError] = useState(null); // { message, usageCount }
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -63,14 +64,29 @@ export default function Amenities() {
     }
   };
 
-  const confirmDelete = async () => {
+  const openDelete = (amenity) => {
+    setDeleteError(null);
+    setDeleting(amenity);
+  };
+
+  // First attempt goes through without force. If the amenity is in use, the
+  // backend rejects with a usage count instead of silently cascading — we
+  // surface that count and let the admin explicitly confirm removing it
+  // from every property that currently has it (see AUDIT-PHASE-1.md, Medium #8).
+  const confirmDelete = async (force = false) => {
     try {
-      await amenityService.remove(deleting.id);
+      await amenityService.remove(deleting.id, force);
       toast.success('Amenity deleted');
       setDeleting(null);
+      setDeleteError(null);
       load();
     } catch (err) {
-      toast.error(err);
+      const usageCount = err?.response?.data?.errors?.usageCount;
+      if (err?.response?.status === 409 && usageCount) {
+        setDeleteError({ message: err.response.data.message, usageCount });
+      } else {
+        toast.error(err);
+      }
     }
   };
 
@@ -79,12 +95,27 @@ export default function Amenities() {
     { key: 'icon', label: 'Icon' },
     { key: 'type', label: 'Applies to' },
     {
+      key: 'usage',
+      label: 'In use',
+      render: (r) =>
+        r.usageCount > 0 ? (
+          <Chip
+            size="small"
+            label={`${r.usageCount} propert${r.usageCount === 1 ? 'y' : 'ies'}`}
+            color="secondary"
+            variant="outlined"
+          />
+        ) : (
+          <Chip size="small" label="Unused" variant="outlined" />
+        ),
+    },
+    {
       key: 'actions',
       label: 'Actions',
       render: (r) => (
         <Stack direction="row" spacing={0.5}>
           <IconButton size="small" onClick={() => openEdit(r)}><EditIcon fontSize="small" /></IconButton>
-          <IconButton size="small" onClick={() => setDeleting(r)}><DeleteIcon fontSize="small" /></IconButton>
+          <IconButton size="small" onClick={() => openDelete(r)}><DeleteIcon fontSize="small" /></IconButton>
         </Stack>
       ),
     },
@@ -112,9 +143,18 @@ export default function Amenities() {
 
       <ConfirmDialog
         open={!!deleting}
-        message={`Delete "${deleting?.name}"?`}
-        onConfirm={confirmDelete}
-        onCancel={() => setDeleting(null)}
+        title={deleteError ? 'This amenity is in use' : 'Delete amenity'}
+        message={
+          deleteError ? (
+            <Alert severity="warning" sx={{ mb: 0 }}>
+              {deleteError.message} Deleting it will remove it from every property listed above.
+            </Alert>
+          ) : (
+            `Delete "${deleting?.name}"?`
+          )
+        }
+        onConfirm={() => confirmDelete(!!deleteError)}
+        onCancel={() => { setDeleting(null); setDeleteError(null); }}
       />
     </>
   );

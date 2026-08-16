@@ -141,6 +141,36 @@ async function removeImage(hotelId, imageId) {
   if (!deleted) throw ApiError.notFound('Image not found');
 }
 
+/**
+ * Fix (AUDIT-PHASE-1.md, API gap): hotel_images.sort_order and is_cover
+ * existed in the schema but had no route to update them after the initial
+ * upload — is_cover was only ever set automatically on the first image.
+ * `imageIds` is the full ordered list of image IDs for this hotel; their
+ * position in the array becomes their new sort_order.
+ */
+async function reorderImages(hotelId, imageIds) {
+  const images = await db('hotel_images').where({ hotel_id: hotelId }).whereIn('id', imageIds);
+  if (images.length !== imageIds.length) throw ApiError.badRequest('One or more image ids do not belong to this hotel');
+
+  await db.transaction(async (trx) => {
+    await Promise.all(
+      imageIds.map((id, index) => trx('hotel_images').where({ id, hotel_id: hotelId }).update({ sort_order: index }))
+    );
+  });
+  return db('hotel_images').where({ hotel_id: hotelId }).orderBy('sort_order');
+}
+
+async function setCoverImage(hotelId, imageId) {
+  const image = await db('hotel_images').where({ id: imageId, hotel_id: hotelId }).first();
+  if (!image) throw ApiError.notFound('Image not found');
+
+  await db.transaction(async (trx) => {
+    await trx('hotel_images').where({ hotel_id: hotelId }).update({ is_cover: false });
+    await trx('hotel_images').where({ id: imageId }).update({ is_cover: true });
+  });
+  return db('hotel_images').where({ hotel_id: hotelId }).orderBy('sort_order');
+}
+
 async function addRoom(hotelId, payload) {
   const hotel = await db('hotels').where({ id: hotelId }).first();
   if (!hotel) throw ApiError.notFound('Hotel not found');
@@ -235,6 +265,8 @@ module.exports = {
   deleteHotel,
   addImages,
   removeImage,
+  reorderImages,
+  setCoverImage,
   addRoom,
   updateRoom,
   deleteRoom,

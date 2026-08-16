@@ -3,11 +3,11 @@ import { useSearchParams } from 'react-router-dom';
 import { AdjustmentsHorizontalIcon, MapIcon, ListBulletIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import PropertyCard from '../components/PropertyCard';
+import PropertySkeletonCard from '../components/PropertySkeletonCard';
 import FilterPanel from '../components/FilterPanel';
 import MapView from '../components/MapView';
 import Drawer from '../components/ui/Drawer';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
 import useFavorites from '../hooks/useFavorites';
 import hotelService from '../services/hotel.service';
 import siteService from '../services/site.service';
@@ -75,47 +75,62 @@ export default function Hotels() {
         </div>
       </div>
 
-      {loading ? (
-        <div className="flex justify-center py-16"><Spinner className="h-8 w-8" /></div>
-      ) : hotels.length === 0 ? (
-        <p className="text-ink/50">{t('listing.noResults')}</p>
-      ) : (
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_1fr] lg:h-[calc(100vh-180px)]">
-          {/* List column */}
-          <div className={`${mobileView === 'map' ? 'hidden' : 'block'} overflow-y-auto pr-1 lg:block`}>
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_1fr] lg:h-[calc(100vh-180px)]">
+        {/* List column */}
+        <div className={`${mobileView === 'map' ? 'hidden' : 'block'} overflow-y-auto pr-1 lg:block`}>
+          {loading ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {hotels.map((h) => (
-                <div
-                  key={h.id}
-                  onMouseEnter={() => setHoveredId(h.id)}
-                  onMouseLeave={() => setHoveredId(null)}
-                  className={`rounded-2xl transition ${hoveredId === h.id ? 'ring-2 ring-gold-400' : ''}`}
-                >
-                  <PropertyCard property={h} type="hotel" isFavorite={isFavorite('hotel', h.id)} onToggleFavorite={(p) => toggle(p, 'hotel')} />
-                </div>
-              ))}
+              {Array.from({ length: 6 }).map((_, i) => <PropertySkeletonCard key={i} />)}
             </div>
-            {totalPages > 1 && (
-              <div className="mt-6 flex items-center justify-center gap-1.5">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => setPage(p)}
-                    className={`h-9 w-9 rounded-lg text-sm font-semibold transition ${p === page ? 'bg-brand-800 text-white' : 'text-ink/60 hover:bg-brand-50'}`}
+          ) : hotels.length === 0 ? (
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-brand-800/20 py-16 text-center">
+              <p className="mb-3 text-ink/50">{t('listing.noResults')}</p>
+              {(search || filters.minPrice || filters.maxPrice || filters.rating) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => { setSearch(''); setFilters({}); setPage(1); }}
+                >
+                  Clear search &amp; filters
+                </Button>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {hotels.map((h) => (
+                  <div
+                    key={h.id}
+                    onMouseEnter={() => setHoveredId(h.id)}
+                    onMouseLeave={() => setHoveredId(null)}
+                    className={`rounded-2xl transition ${hoveredId === h.id ? 'ring-2 ring-gold-400' : ''}`}
                   >
-                    {p}
-                  </button>
+                    <PropertyCard property={h} type="hotel" isFavorite={isFavorite('hotel', h.id)} onToggleFavorite={(p) => toggle(p, 'hotel')} />
+                  </div>
                 ))}
               </div>
-            )}
-          </div>
-
-          {/* Map column */}
-          <div className={`${mobileView === 'list' ? 'hidden' : 'block'} h-[420px] lg:sticky lg:top-24 lg:block lg:h-full`}>
-            <MapView properties={hotels} type="hotel" activeId={hoveredId} onHover={setHoveredId} />
-          </div>
+              {totalPages > 1 && (
+                <div className="mt-6 flex items-center justify-center gap-1.5">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => setPage(p)}
+                      className={`h-9 w-9 rounded-lg text-sm font-semibold transition ${p === page ? 'bg-brand-800 text-white' : 'text-ink/60 hover:bg-brand-50'}`}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </div>
-      )}
+
+        {/* Map column */}
+        <div className={`${mobileView === 'list' ? 'hidden' : 'block'} h-[420px] lg:sticky lg:top-24 lg:block lg:h-full`}>
+          <MapView properties={loading ? [] : hotels} type="hotel" activeId={hoveredId} onHover={setHoveredId} />
+        </div>
+      </div>
 
       <Drawer open={filtersOpen} onClose={() => setFiltersOpen(false)} side="right" title={t('listing.filters')}>
         <FilterPanel filters={filters} onChange={setFilters} amenities={amenities} showRating />

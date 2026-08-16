@@ -140,6 +140,29 @@ async function removeImage(chaletId, imageId) {
   if (!deleted) throw ApiError.notFound('Image not found');
 }
 
+async function reorderImages(chaletId, imageIds) {
+  const images = await db('chalet_images').where({ chalet_id: chaletId }).whereIn('id', imageIds);
+  if (images.length !== imageIds.length) throw ApiError.badRequest('One or more image ids do not belong to this chalet');
+
+  await db.transaction(async (trx) => {
+    await Promise.all(
+      imageIds.map((id, index) => trx('chalet_images').where({ id, chalet_id: chaletId }).update({ sort_order: index }))
+    );
+  });
+  return db('chalet_images').where({ chalet_id: chaletId }).orderBy('sort_order');
+}
+
+async function setCoverImage(chaletId, imageId) {
+  const image = await db('chalet_images').where({ id: imageId, chalet_id: chaletId }).first();
+  if (!image) throw ApiError.notFound('Image not found');
+
+  await db.transaction(async (trx) => {
+    await trx('chalet_images').where({ chalet_id: chaletId }).update({ is_cover: false });
+    await trx('chalet_images').where({ id: imageId }).update({ is_cover: true });
+  });
+  return db('chalet_images').where({ chalet_id: chaletId }).orderBy('sort_order');
+}
+
 /** A chalet is booked as a whole unit per night, so availability is a simple boolean per date. */
 async function checkAvailability(chaletId, checkIn, checkOut) {
   const chalet = await db('chalets').where({ id: chaletId }).first();
@@ -182,6 +205,8 @@ module.exports = {
   deleteChalet,
   addImages,
   removeImage,
+  reorderImages,
+  setCoverImage,
   checkAvailability,
   setAvailability,
 };

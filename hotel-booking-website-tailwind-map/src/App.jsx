@@ -51,6 +51,12 @@ export default function App() {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/cookies" element={<Cookies />} />
+               <Route element={<AuthLayout />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+            </Route>
 
               <Route element={<ProtectedRoute />}>
                 <Route path="/book/:type/:id" element={<BookingWizard />} />
@@ -66,12 +72,7 @@ export default function App() {
               <Route path="*" element={<NotFound />} />
             </Route>
 
-            <Route element={<AuthLayout />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-            </Route>
+           
           </Routes>
         </AuthProvider>
       </BrowserRouter>

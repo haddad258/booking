@@ -36,6 +36,8 @@ router.post(
   chaletController.uploadImages
 );
 router.delete('/:id/images/:imageId', requirePermission('chalets.update'), chaletController.removeImage);
+router.put('/:id/images/reorder', requirePermission('chalets.update'), chaletController.reorderImages);
+router.put('/:id/images/:imageId/cover', requirePermission('chalets.update'), chaletController.setCoverImage);
 
 router.put('/:id/availability', requirePermission('chalets.update'), chaletController.setAvailability);
 

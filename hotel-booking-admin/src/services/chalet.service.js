@@ -17,9 +17,19 @@ async function removeImage(chaletId, imageId) {
   return data;
 }
 
+async function reorderImages(chaletId, imageIds) {
+  const { data } = await api.put(`/chalets/${chaletId}/images/reorder`, { imageIds });
+  return data.data;
+}
+
+async function setCoverImage(chaletId, imageId) {
+  const { data } = await api.put(`/chalets/${chaletId}/images/${imageId}/cover`);
+  return data.data;
+}
+
 async function setAvailability(chaletId, entries) {
   const { data } = await api.put(`/chalets/${chaletId}/availability`, { entries });
   return data.data;
 }
 
-export default { ...base, uploadImages, removeImage, setAvailability };
+export default { ...base, uploadImages, removeImage, reorderImages, setCoverImage, setAvailability };

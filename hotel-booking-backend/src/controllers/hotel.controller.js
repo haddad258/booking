@@ -39,6 +39,16 @@ const removeImage = catchAsync(async (req, res) => {
   ApiResponse.send(res, { message: 'Image removed' });
 });
 
+const reorderImages = catchAsync(async (req, res) => {
+  const images = await hotelService.reorderImages(req.params.id, req.body.imageIds);
+  ApiResponse.send(res, { message: 'Image order updated', data: images });
+});
+
+const setCoverImage = catchAsync(async (req, res) => {
+  const images = await hotelService.setCoverImage(req.params.id, req.params.imageId);
+  ApiResponse.send(res, { message: 'Cover image updated', data: images });
+});
+
 const addRoom = catchAsync(async (req, res) => {
   const room = await hotelService.addRoom(req.params.id, req.body);
   ApiResponse.send(res, { statusCode: 201, message: 'Room created', data: room });
@@ -73,6 +83,8 @@ module.exports = {
   remove,
   uploadImages,
   removeImage,
+  reorderImages,
+  setCoverImage,
   addRoom,
   updateRoom,
   deleteRoom,

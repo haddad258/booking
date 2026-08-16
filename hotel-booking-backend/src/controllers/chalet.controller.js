@@ -39,6 +39,16 @@ const removeImage = catchAsync(async (req, res) => {
   ApiResponse.send(res, { message: 'Image removed' });
 });
 
+const reorderImages = catchAsync(async (req, res) => {
+  const images = await chaletService.reorderImages(req.params.id, req.body.imageIds);
+  ApiResponse.send(res, { message: 'Image order updated', data: images });
+});
+
+const setCoverImage = catchAsync(async (req, res) => {
+  const images = await chaletService.setCoverImage(req.params.id, req.params.imageId);
+  ApiResponse.send(res, { message: 'Cover image updated', data: images });
+});
+
 const checkAvailability = catchAsync(async (req, res) => {
   const { checkIn, checkOut } = req.query;
   const result = await chaletService.checkAvailability(req.params.id, checkIn, checkOut);
@@ -58,6 +68,8 @@ module.exports = {
   remove,
   uploadImages,
   removeImage,
+  reorderImages,
+  setCoverImage,
   checkAvailability,
   setAvailability,
 };

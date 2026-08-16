@@ -127,6 +127,7 @@ export default function Chalets() {
         onSearch={table.onSearch}
         loading={table.loading}
         searchPlaceholder="Search chalets…"
+        emptyAction={{ label: 'Add your first chalet', onClick: openCreate }}
       />
 
       <EntityDialog

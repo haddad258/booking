@@ -17,6 +17,16 @@ async function removeImage(hotelId, imageId) {
   return data;
 }
 
+async function reorderImages(hotelId, imageIds) {
+  const { data } = await api.put(`/hotels/${hotelId}/images/reorder`, { imageIds });
+  return data.data;
+}
+
+async function setCoverImage(hotelId, imageId) {
+  const { data } = await api.put(`/hotels/${hotelId}/images/${imageId}/cover`);
+  return data.data;
+}
+
 async function addRoom(hotelId, payload) {
   const { data } = await api.post(`/hotels/${hotelId}/rooms`, payload);
   return data.data;
@@ -37,4 +47,4 @@ async function setAvailability(hotelId, roomId, entries) {
   return data.data;
 }
 
-export default { ...base, uploadImages, removeImage, addRoom, updateRoom, deleteRoom, setAvailability };
+export default { ...base, uploadImages, removeImage, reorderImages, setCoverImage, addRoom, updateRoom, deleteRoom, setAvailability };

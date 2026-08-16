@@ -37,6 +37,8 @@ router.post(
   hotelController.uploadImages
 );
 router.delete('/:id/images/:imageId', requirePermission('hotels.update'), hotelController.removeImage);
+router.put('/:id/images/reorder', requirePermission('hotels.update'), hotelController.reorderImages);
+router.put('/:id/images/:imageId/cover', requirePermission('hotels.update'), hotelController.setCoverImage);
 
 router.post('/:id/rooms', requirePermission('hotels.update'), createRoomRules, validate, hotelController.addRoom);
 router.patch('/:id/rooms/:roomId', requirePermission('hotels.update'), hotelController.updateRoom);

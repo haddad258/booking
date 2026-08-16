@@ -11,6 +11,7 @@ import AddIcon from '@mui/icons-material/AddRounded';
 import PageHeader from '../components/PageHeader';
 import EntityDialog from '../components/EntityDialog';
 import ImageUploader from '../components/ImageUploader';
+import LocationMapPicker from '../components/LocationMapPicker';
 import useToast from '../hooks/useToast';
 import hotelService from '../services/hotel.service';
 
@@ -24,6 +25,8 @@ export default function HotelDetail() {
   const [roomDialogOpen, setRoomDialogOpen] = useState(false);
   const [editingRoom, setEditingRoom] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
+  const [savingLocation, setSavingLocation] = useState(false);
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -31,6 +34,7 @@ export default function HotelDetail() {
     setLoading(true);
     const data = await hotelService.getById(id);
     setHotel(data);
+    setLocation({ latitude: data.latitude, longitude: data.longitude });
     setLoading(false);
   };
 
@@ -58,6 +62,29 @@ export default function HotelDetail() {
       load();
     } catch (err) {
       toast.error(err);
+    }
+  };
+
+  const handleSetCover = async (imageId) => {
+    try {
+      await hotelService.setCoverImage(id, imageId);
+      toast.success('Cover image updated');
+      load();
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+
+  const handleSaveLocation = async () => {
+    setSavingLocation(true);
+    try {
+      await hotelService.update(id, location);
+      toast.success('Location saved');
+      load();
+    } catch (err) {
+      toast.error(err);
+    } finally {
+      setSavingLocation(false);
     }
   };
 
@@ -182,9 +209,33 @@ export default function HotelDetail() {
         </Grid>
 
         <Grid item xs={12} md={5}>
-          <Paper elevation={0} sx={{ p: 2.5 }}>
+          <Paper elevation={0} sx={{ p: 2.5, mb: 2 }}>
             <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>Gallery</Typography>
-            <ImageUploader images={hotel.images} onUpload={handleUpload} onRemove={handleRemoveImage} uploading={uploading} />
+            <ImageUploader
+              images={hotel.images}
+              onUpload={handleUpload}
+              onRemove={handleRemoveImage}
+              onSetCover={handleSetCover}
+              uploading={uploading}
+            />
+          </Paper>
+
+          <Paper elevation={0} sx={{ p: 2.5 }}>
+            <LocationMapPicker
+              latitude={location.latitude}
+              longitude={location.longitude}
+              onChange={setLocation}
+            />
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              sx={{ mt: 1.5 }}
+              disabled={savingLocation || (location.latitude === hotel.latitude && location.longitude === hotel.longitude)}
+              onClick={handleSaveLocation}
+            >
+              Save location
+            </Button>
           </Paper>
         </Grid>
       </Grid>

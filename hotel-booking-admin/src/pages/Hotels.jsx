@@ -131,6 +131,7 @@ export default function Hotels() {
         onSearch={table.onSearch}
         loading={table.loading}
         searchPlaceholder="Search hotels…"
+        emptyAction={{ label: 'Add your first hotel', onClick: openCreate }}
       />
 
       <EntityDialog
