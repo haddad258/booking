@@ -55,7 +55,25 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
-app.use('/uploads', express.static(path.join(process.cwd(), uploads.dir)));
+// Fix: helmet()'s default Cross-Origin-Resource-Policy is 'same-origin',
+// which blocks the browser from loading images served here (e.g.
+// http://localhost:5000/uploads/chalets/x.jpg) when embedded on a
+// different origin — the admin dashboard and public website both run on
+// their own ports/domains and both need to <img src> these files. Property
+// photos are meant to be publicly embeddable, so this route explicitly
+// relaxes CORP to 'cross-origin' rather than touching the global helmet()
+// policy (which stays strict for the actual API responses).
+app.use(
+  '/uploads',
+  (req, res, next) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    next();
+  },
+  express.static(path.join(process.cwd(), uploads.dir), {
+    maxAge: '7d',
+    etag: true,
+  })
+);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/api-docs.json', (req, res) => res.json(swaggerSpec));

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import {
-  Box, Paper, Typography, Grid, IconButton, Stack, Button, TextField, CircularProgress, Chip,
+  Box, Paper, Typography, Grid, IconButton, Stack, Button, TextField, CircularProgress,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBackRounded';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineRounded';
@@ -12,8 +12,10 @@ import PageHeader from '../components/PageHeader';
 import EntityDialog from '../components/EntityDialog';
 import ImageUploader from '../components/ImageUploader';
 import LocationMapPicker from '../components/LocationMapPicker';
+import AmenitiesManager from '../components/AmenitiesManager';
 import useToast from '../hooks/useToast';
 import hotelService from '../services/hotel.service';
+import amenityService from '../services/amenity.service';
 
 export default function HotelDetail() {
   const { id } = useParams();
@@ -27,6 +29,7 @@ export default function HotelDetail() {
   const [saving, setSaving] = useState(false);
   const [location, setLocation] = useState({ latitude: null, longitude: null });
   const [savingLocation, setSavingLocation] = useState(false);
+  const [allAmenities, setAllAmenities] = useState([]);
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -38,10 +41,21 @@ export default function HotelDetail() {
     setLoading(false);
   };
 
+  const loadAmenityCatalog = async () => {
+    const res = await amenityService.list();
+    setAllAmenities(res.data || []);
+  };
+
   useEffect(() => {
     load();
+    loadAmenityCatalog();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  const handleSaveAmenities = async (amenityIds) => {
+    await hotelService.update(id, { amenityIds });
+    await load();
+  };
 
   const handleUpload = async (files) => {
     setUploading(true);
@@ -162,14 +176,13 @@ export default function HotelDetail() {
       <Grid container spacing={2}>
         <Grid item xs={12} md={7}>
           <Paper elevation={0} sx={{ p: 2.5, mb: 2 }}>
-            <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>Amenities</Typography>
-            <Stack direction="row" flexWrap="wrap" gap={1}>
-              {hotel.amenities?.length ? (
-                hotel.amenities.map((a) => <Chip key={a.id} label={a.name} size="small" />)
-              ) : (
-                <Typography variant="body2" color="text.secondary">No amenities assigned yet.</Typography>
-              )}
-            </Stack>
+            <AmenitiesManager
+              amenities={hotel.amenities}
+              allAmenities={allAmenities}
+              onSave={handleSaveAmenities}
+              onCatalogRefresh={loadAmenityCatalog}
+              defaultType="hotel"
+            />
           </Paper>
 
           <Paper elevation={0} sx={{ p: 2.5 }}>

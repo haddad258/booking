@@ -4,7 +4,7 @@ import { MapPinIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { ReviewList, ReviewForm } from '../components/Review';
 import PropertyCard from '../components/PropertyCard';
-import MapView from '../components/MapView';
+import PropertyLocationMap from '../components/PropertyLocationMap';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Spinner from '../components/ui/Spinner';
@@ -94,8 +94,15 @@ export default function ChaletDetail() {
           <div className="mb-8 border-t border-brand-800/10" />
 
           <h2 className="font-display mb-3 text-xl font-semibold text-ink">{t('detail.location')}</h2>
-          <div className="mb-8 h-64 sm:h-80">
-            <MapView properties={[chalet]} type="chalet" />
+          <div className="mb-8">
+            <PropertyLocationMap
+              name={chalet.name}
+              address={chalet.address}
+              city={chalet.city}
+              country={chalet.country}
+              latitude={chalet.latitude}
+              longitude={chalet.longitude}
+            />
           </div>
 
           <div className="mb-8 border-t border-brand-800/10" />

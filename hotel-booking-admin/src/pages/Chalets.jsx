@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useState, useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { TextField, MenuItem, Grid, IconButton, Stack } from '@mui/material';
+import { TextField, MenuItem, Grid, IconButton, Stack, Autocomplete, Chip } from '@mui/material';
 import EditIcon from '@mui/icons-material/EditOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineRounded';
 import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
@@ -13,6 +13,7 @@ import StatusChip from '../components/StatusChip';
 import useDataTable from '../hooks/useDataTable';
 import useToast from '../hooks/useToast';
 import chaletService from '../services/chalet.service';
+import amenityService from '../services/amenity.service';
 
 const STATUS_OPTIONS = ['draft', 'published', 'archived'];
 
@@ -24,28 +25,37 @@ export default function Chalets() {
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [amenities, setAmenities] = useState([]);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const { register, handleSubmit, reset, control, formState: { errors } } = useForm();
+
+  useEffect(() => {
+    amenityService.list().then((res) => setAmenities(res.data || []));
+  }, []);
 
   const openCreate = () => {
     setEditing(null);
-    reset({ name: '', address: '', city: '', country: '', capacity: 2, bedrooms: 1, bathrooms: 1, basePrice: '', status: 'draft' });
+    reset({ name: '', address: '', city: '', country: '', capacity: 2, bedrooms: 1, bathrooms: 1, basePrice: '', status: 'draft', amenityIds: [] });
     setDialogOpen(true);
   };
 
-  const openEdit = (chalet) => {
+  const openEdit = async (chalet) => {
     setEditing(chalet);
+    // The list endpoint doesn't include the amenities relation (only
+    // getById does), so fetch full detail to pre-populate it correctly.
+    const full = await chaletService.getById(chalet.id);
     reset({
-      name: chalet.name,
-      address: chalet.address,
-      city: chalet.city,
-      country: chalet.country,
-      capacity: chalet.capacity,
-      bedrooms: chalet.bedrooms,
-      bathrooms: chalet.bathrooms,
-      basePrice: chalet.base_price,
-      status: chalet.status,
-      description: chalet.description || '',
+      name: full.name,
+      address: full.address,
+      city: full.city,
+      country: full.country,
+      capacity: full.capacity,
+      bedrooms: full.bedrooms,
+      bathrooms: full.bathrooms,
+      basePrice: full.base_price,
+      status: full.status,
+      description: full.description || '',
+      amenityIds: (full.amenities || []).map((a) => a.id),
     });
     setDialogOpen(true);
   };
@@ -59,6 +69,7 @@ export default function Chalets() {
         bedrooms: Number(values.bedrooms),
         bathrooms: Number(values.bathrooms),
         basePrice: Number(values.basePrice),
+        amenityIds: values.amenityIds || [],
       };
       if (editing) {
         await chaletService.update(editing.id, payload);
@@ -172,6 +183,29 @@ export default function Chalets() {
           </Grid>
           <Grid item xs={12}>
             <TextField fullWidth multiline rows={3} label="Description" {...register('description')} />
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              name="amenityIds"
+              control={control}
+              defaultValue={[]}
+              render={({ field }) => (
+                <Autocomplete
+                  multiple
+                  options={amenities}
+                  getOptionLabel={(a) => a.name}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  value={amenities.filter((a) => (field.value || []).includes(a.id))}
+                  onChange={(e, selected) => field.onChange(selected.map((a) => a.id))}
+                  renderInput={(params) => <TextField {...params} label="Amenities" placeholder="Select amenities" />}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <Chip {...getTagProps({ index })} key={option.id} label={option.name} size="small" />
+                    ))
+                  }
+                />
+              )}
+            />
           </Grid>
         </Grid>
       </EntityDialog>

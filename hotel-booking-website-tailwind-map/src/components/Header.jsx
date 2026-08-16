@@ -1,9 +1,10 @@
 import { useEffect, useState, Fragment } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
-import { Bars3Icon, GlobeAltIcon, MapIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, GlobeAltIcon, MapIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
+import useFavorites from '../hooks/useFavorites';
 import Button from './ui/Button';
 import Drawer from './ui/Drawer';
 
@@ -24,6 +25,7 @@ const NAV_LINKS = [
 export default function Header() {
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
+  const { favorites } = useFavorites();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -74,6 +76,15 @@ export default function Header() {
         </nav>
 
         <div className="flex flex-1 justify-end md:flex-none" />
+
+        <RouterLink to="/favorites" className="relative rounded-lg p-2 hover:bg-brand-50" title="Saved properties">
+          <HeartIcon className="h-5 w-5" />
+          {favorites.length > 0 && (
+            <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gold-500 text-[10px] font-bold text-white">
+              {favorites.length > 9 ? '9+' : favorites.length}
+            </span>
+          )}
+        </RouterLink>
 
         <Menu as="div" className="relative">
           <MenuButton className="rounded-lg p-2 hover:bg-brand-50">
@@ -127,7 +138,7 @@ export default function Header() {
                 </MenuItem>
                 <MenuItem>
                   {({ focus }) => (
-                    <RouterLink to="/account/favorites" className={`block rounded-lg px-3 py-2 text-sm ${focus ? 'bg-brand-50' : ''}`}>{t('nav.favorites')}</RouterLink>
+                    <RouterLink to="/favorites" className={`block rounded-lg px-3 py-2 text-sm ${focus ? 'bg-brand-50' : ''}`}>{t('nav.favorites')}</RouterLink>
                   )}
                 </MenuItem>
                 <div className="my-1 border-t border-brand-800/10" />
@@ -159,6 +170,14 @@ export default function Header() {
               {t(link.label)}
             </RouterLink>
           ))}
+          <RouterLink
+            to="/favorites"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-2 rounded-lg px-3 py-2.5 font-semibold text-ink hover:bg-brand-50"
+          >
+            <HeartIcon className="h-4 w-4" /> {t('nav.favorites')}
+            {favorites.length > 0 && <span className="text-xs font-normal text-ink/50">({favorites.length})</span>}
+          </RouterLink>
         </nav>
         <div className="mt-4 flex flex-col gap-2 border-t border-brand-800/10 pt-4">
           {user ? (

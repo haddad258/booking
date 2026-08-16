@@ -21,9 +21,9 @@ import ResetPassword from './pages/ResetPassword';
 
 import AccountDashboard from './pages/AccountDashboard';
 import AccountBookings from './pages/AccountBookings';
-import AccountFavorites from './pages/AccountFavorites';
 import AccountProfile from './pages/AccountProfile';
 import AccountPassword from './pages/AccountPassword';
+import Favorites from './pages/Favorites';
 
 import Contact from './pages/Contact';
 import About from './pages/About';
@@ -51,19 +51,13 @@ export default function App() {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/cookies" element={<Cookies />} />
-               <Route element={<AuthLayout />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-            </Route>
+              <Route path="/favorites" element={<Favorites />} />
 
               <Route element={<ProtectedRoute />}>
                 <Route path="/book/:type/:id" element={<BookingWizard />} />
                 <Route element={<AccountLayout />}>
                   <Route path="/account" element={<AccountDashboard />} />
                   <Route path="/account/bookings" element={<AccountBookings />} />
-                  <Route path="/account/favorites" element={<AccountFavorites />} />
                   <Route path="/account/profile" element={<AccountProfile />} />
                   <Route path="/account/password" element={<AccountPassword />} />
                 </Route>
@@ -72,7 +66,12 @@ export default function App() {
               <Route path="*" element={<NotFound />} />
             </Route>
 
-           
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+            </Route>
           </Routes>
         </AuthProvider>
       </BrowserRouter>

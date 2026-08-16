@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import {
-  TextField, MenuItem, Grid, IconButton, Chip, Rating, Stack,
+  TextField, MenuItem, Grid, IconButton, Chip, Rating, Stack, Autocomplete,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/EditOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineRounded';
@@ -29,7 +29,7 @@ export default function Hotels() {
   const [saving, setSaving] = useState(false);
   const [amenities, setAmenities] = useState([]);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const { register, handleSubmit, reset, control, formState: { errors } } = useForm();
 
   useEffect(() => {
     amenityService.list().then((res) => setAmenities(res.data || []));
@@ -37,21 +37,25 @@ export default function Hotels() {
 
   const openCreate = () => {
     setEditing(null);
-    reset({ name: '', address: '', city: '', country: '', basePrice: '', starRating: '', status: 'draft' });
+    reset({ name: '', address: '', city: '', country: '', basePrice: '', starRating: '', status: 'draft', amenityIds: [] });
     setDialogOpen(true);
   };
 
-  const openEdit = (hotel) => {
+  const openEdit = async (hotel) => {
     setEditing(hotel);
+    // The list endpoint doesn't include the amenities relation (only
+    // getHotelById does), so fetch full detail to pre-populate it correctly.
+    const full = await hotelService.getById(hotel.id);
     reset({
-      name: hotel.name,
-      address: hotel.address,
-      city: hotel.city,
-      country: hotel.country,
-      basePrice: hotel.base_price,
-      starRating: hotel.star_rating || '',
-      status: hotel.status,
-      description: hotel.description || '',
+      name: full.name,
+      address: full.address,
+      city: full.city,
+      country: full.country,
+      basePrice: full.base_price,
+      starRating: full.star_rating || '',
+      status: full.status,
+      description: full.description || '',
+      amenityIds: (full.amenities || []).map((a) => a.id),
     });
     setDialogOpen(true);
   };
@@ -63,6 +67,7 @@ export default function Hotels() {
         ...values,
         basePrice: Number(values.basePrice),
         starRating: values.starRating ? Number(values.starRating) : undefined,
+        amenityIds: values.amenityIds || [],
       };
       if (editing) {
         await hotelService.update(editing.id, payload);
@@ -170,6 +175,29 @@ export default function Hotels() {
           </Grid>
           <Grid item xs={12}>
             <TextField fullWidth multiline rows={3} label="Description" {...register('description')} />
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              name="amenityIds"
+              control={control}
+              defaultValue={[]}
+              render={({ field }) => (
+                <Autocomplete
+                  multiple
+                  options={amenities}
+                  getOptionLabel={(a) => a.name}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  value={amenities.filter((a) => (field.value || []).includes(a.id))}
+                  onChange={(e, selected) => field.onChange(selected.map((a) => a.id))}
+                  renderInput={(params) => <TextField {...params} label="Amenities" placeholder="Select amenities" />}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <Chip {...getTagProps({ index })} key={option.id} label={option.name} size="small" />
+                    ))
+                  }
+                />
+              )}
+            />
           </Grid>
         </Grid>
       </EntityDialog>
