@@ -33,6 +33,7 @@ async function createChalet(payload, adminId) {
       base_price: payload.basePrice,
       currency: payload.currency || 'USD',
       status: payload.status || 'draft',
+      important: payload.important === true,
       created_by: adminId,
     })
     .returning('*');
@@ -55,6 +56,11 @@ async function listChalets(query) {
   if (query.minPrice) qb.where('base_price', '>=', query.minPrice);
   if (query.maxPrice) qb.where('base_price', '<=', query.maxPrice);
   if (query.search) qb.where('name', 'ilike', `%${query.search}%`);
+  // Used by the public site's "Les plus demandés" (Most Requested) home
+  // page section: GET /chalets?important=true
+  if (query.important !== undefined) {
+    qb.where('important', query.important === 'true' || query.important === true);
+  }
 
   const totalQuery = qb.clone().clearSelect().count('* as count').first();
   const rowsQuery = qb.clone().orderBy('created_at', 'desc').limit(limit).offset(offset);
@@ -97,6 +103,7 @@ async function updateChalet(id, payload) {
     basePrice: 'base_price',
     currency: 'currency',
     status: 'status',
+    important: 'important',
   };
   for (const [key, column] of Object.entries(map)) {
     if (payload[key] !== undefined) updates[column] = payload[key];

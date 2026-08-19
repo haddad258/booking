@@ -13,6 +13,7 @@ const createHotelRules = [
   body('currency').optional().isLength({ min: 3, max: 3 }),
   body('amenityIds').optional().isArray(),
   body('status').optional().isIn(['draft', 'published', 'archived']),
+  body('important').optional().isBoolean(),
 ];
 
 const updateHotelRules = [
@@ -20,6 +21,7 @@ const updateHotelRules = [
   body('name').optional().trim().notEmpty(),
   body('basePrice').optional().isFloat({ min: 0 }),
   body('status').optional().isIn(['draft', 'published', 'archived']),
+  body('important').optional().isBoolean(),
 ];
 
 const idParamRule = [param('id').isInt().withMessage('Invalid id')];
@@ -33,6 +35,7 @@ const listHotelsRules = [
   query('maxPrice').optional().isFloat({ min: 0 }),
   query('rating').optional().isInt({ min: 0, max: 5 }),
   query('status').optional().isIn(['draft', 'published', 'archived']),
+  query('important').optional().isBoolean(),
 ];
 
 const createRoomRules = [

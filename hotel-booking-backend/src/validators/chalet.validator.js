@@ -12,6 +12,7 @@ const createChaletRules = [
   body('basePrice').isFloat({ min: 0 }).withMessage('Base price must be a positive number'),
   body('amenityIds').optional().isArray(),
   body('status').optional().isIn(['draft', 'published', 'archived']),
+  body('important').optional().isBoolean(),
 ];
 
 const updateChaletRules = [
@@ -19,6 +20,7 @@ const updateChaletRules = [
   body('name').optional().trim().notEmpty(),
   body('basePrice').optional().isFloat({ min: 0 }),
   body('status').optional().isIn(['draft', 'published', 'archived']),
+  body('important').optional().isBoolean(),
 ];
 
 const idParamRule = [param('id').isInt().withMessage('Invalid id')];
@@ -30,6 +32,7 @@ const listChaletsRules = [
   query('minCapacity').optional().isInt({ min: 1 }),
   query('minPrice').optional().isFloat({ min: 0 }),
   query('maxPrice').optional().isFloat({ min: 0 }),
+  query('important').optional().isBoolean(),
 ];
 
 module.exports = { createChaletRules, updateChaletRules, idParamRule, listChaletsRules };

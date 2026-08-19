@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import {
-  TextField, MenuItem, Grid, IconButton, Chip, Rating, Stack, Autocomplete,
+  TextField, MenuItem, Grid, IconButton, Chip, Rating, Stack, Autocomplete, FormControlLabel, Checkbox, Tooltip,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/EditOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineRounded';
 import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
+import StarIcon from '@mui/icons-material/Star';
 import PageHeader from '../components/PageHeader';
 import DataTable from '../components/DataTable';
 import EntityDialog from '../components/EntityDialog';
@@ -37,7 +38,7 @@ export default function Hotels() {
 
   const openCreate = () => {
     setEditing(null);
-    reset({ name: '', address: '', city: '', country: '', basePrice: '', starRating: '', status: 'draft', amenityIds: [] });
+    reset({ name: '', address: '', city: '', country: '', basePrice: '', starRating: '', status: 'draft', amenityIds: [], important: false });
     setDialogOpen(true);
   };
 
@@ -56,6 +57,7 @@ export default function Hotels() {
       status: full.status,
       description: full.description || '',
       amenityIds: (full.amenities || []).map((a) => a.id),
+      important: !!full.important,
     });
     setDialogOpen(true);
   };
@@ -97,7 +99,20 @@ export default function Hotels() {
   };
 
   const columns = [
-    { key: 'name', label: 'Name', render: (r) => <strong>{r.name}</strong> },
+    {
+      key: 'name',
+      label: 'Name',
+      render: (r) => (
+        <Stack direction="row" alignItems="center" spacing={0.5}>
+          {r.important && (
+            <Tooltip title="Featured on homepage">
+              <StarIcon fontSize="small" color="secondary" />
+            </Tooltip>
+          )}
+          <strong>{r.name}</strong>
+        </Stack>
+      ),
+    },
     { key: 'city', label: 'City', render: (r) => `${r.city}, ${r.country}` },
     { key: 'star_rating', label: 'Rating', render: (r) => <Rating value={r.star_rating || 0} readOnly size="small" /> },
     { key: 'base_price', label: 'Base price', render: (r) => <span className="mono">${Number(r.base_price).toFixed(2)}</span> },
@@ -172,6 +187,12 @@ export default function Hotels() {
                 <MenuItem key={s} value={s}>{s}</MenuItem>
               ))}
             </TextField>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={<Checkbox {...register('important')} defaultChecked={false} />}
+              label="Featured (À la une) — show in the 'Les plus demandés' section on the homepage"
+            />
           </Grid>
           <Grid item xs={12}>
             <TextField fullWidth multiline rows={3} label="Description" {...register('description')} />

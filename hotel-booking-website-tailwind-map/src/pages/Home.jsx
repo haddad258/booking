@@ -27,11 +27,27 @@ export default function Home() {
   const { isFavorite, toggle } = useFavorites();
   const [hotels, setHotels] = useState([]);
   const [chalets, setChalets] = useState([]);
+  const [featuredHotels, setFeaturedHotels] = useState([]);
+  const [featuredChalets, setFeaturedChalets] = useState([]);
+  const [featuredLoading, setFeaturedLoading] = useState(true);
 
   useEffect(() => {
     hotelService.list({ limit: 4 }).then((res) => setHotels(res.data || []));
     chaletService.list({ limit: 4 }).then((res) => setChalets(res.data || []));
+    // "Les plus demandés" — properties an admin has explicitly marked as
+    // important/featured, never a hardcoded list.
+    Promise.all([
+      hotelService.list({ important: true, limit: 8 }),
+      chaletService.list({ important: true, limit: 8 }),
+    ])
+      .then(([hotelsRes, chaletsRes]) => {
+        setFeaturedHotels(hotelsRes.data || []);
+        setFeaturedChalets(chaletsRes.data || []);
+      })
+      .finally(() => setFeaturedLoading(false));
   }, []);
+
+  const hasFeatured = featuredHotels.length > 0 || featuredChalets.length > 0;
 
   return (
     <div>
@@ -114,6 +130,42 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {/* Les plus demandés — only rendered once we know whether there's
+          anything to show, and not rendered at all if there isn't. */}
+      {!featuredLoading && hasFeatured && (
+        <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
+          <h2 className="font-display mb-2 text-2xl font-semibold text-ink sm:text-3xl">{t('home.mostRequested')}</h2>
+          <p className="mb-8 text-ink/55">{t('home.mostRequestedSubtitle')}</p>
+
+          {featuredHotels.length > 0 && (
+            <div className="mb-10">
+              <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-ink/50">
+                {t('nav.hotels')}
+                <span className="h-px flex-1 bg-brand-800/10" />
+              </h3>
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {featuredHotels.map((h) => (
+                  <PropertyCard key={h.id} property={h} type="hotel" isFavorite={isFavorite('hotel', h.id)} onToggleFavorite={(p) => toggle(p, 'hotel')} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {featuredChalets.length > 0 && (
+            <div>
+              <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-ink/50">
+                {t('nav.chalets')}
+                <span className="h-px flex-1 bg-brand-800/10" />
+              </h3>
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {featuredChalets.map((c) => (
+                  <PropertyCard key={c.id} property={c} type="chalet" isFavorite={isFavorite('chalet', c.id)} onToggleFavorite={(p) => toggle(p, 'chalet')} />
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }

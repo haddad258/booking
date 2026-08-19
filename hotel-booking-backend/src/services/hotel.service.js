@@ -27,6 +27,7 @@ async function createHotel(payload, adminId) {
       currency: payload.currency || 'USD',
       services: payload.services ? JSON.stringify(payload.services) : null,
       status: payload.status || 'draft',
+      important: payload.important === true,
       created_by: adminId,
     })
     .returning('*');
@@ -55,6 +56,11 @@ async function listHotels(query) {
   if (query.maxPrice) qb.where('base_price', '<=', query.maxPrice);
   if (query.rating) qb.where('star_rating', '>=', query.rating);
   if (query.search) qb.where('name', 'ilike', `%${query.search}%`);
+  // Used by the public site's "Les plus demandés" (Most Requested) home
+  // page section to fetch only featured properties: GET /hotels?important=true
+  if (query.important !== undefined) {
+    qb.where('important', query.important === 'true' || query.important === true);
+  }
 
   const totalQuery = qb.clone().clearSelect().count('* as count').first();
   const rowsQuery = qb.clone().orderBy('created_at', 'desc').limit(limit).offset(offset);
@@ -97,6 +103,7 @@ async function updateHotel(id, payload) {
     basePrice: 'base_price',
     currency: 'currency',
     status: 'status',
+    important: 'important',
   };
   for (const [key, column] of Object.entries(map)) {
     if (payload[key] !== undefined) updates[column] = payload[key];

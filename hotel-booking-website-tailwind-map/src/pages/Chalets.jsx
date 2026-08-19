@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import PropertyCard from '../components/PropertyCard';
 import PropertySkeletonCard from '../components/PropertySkeletonCard';
 import FilterPanel from '../components/FilterPanel';
-import MapView from '../components/MapView';
+import PropertiesMapView from '../components/PropertiesMapView';
 import Drawer from '../components/ui/Drawer';
 import Button from '../components/ui/Button';
 import useFavorites from '../hooks/useFavorites';
@@ -127,7 +127,7 @@ export default function Chalets() {
         </div>
 
         <div className={`${mobileView === 'list' ? 'hidden' : 'block'} h-[420px] lg:sticky lg:top-24 lg:block lg:h-full`}>
-          <MapView properties={loading ? [] : chalets} type="chalet" activeId={hoveredId} onHover={setHoveredId} />
+          <PropertiesMapView properties={loading ? [] : chalets} type="chalet" activeId={hoveredId} onHover={setHoveredId} />
         </div>
       </div>
 

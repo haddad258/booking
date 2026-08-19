@@ -88,9 +88,9 @@ export default function Dashboard() {
         <Grid item xs={12} sm={6} md={4} lg={1.7}>
           <StatCard icon={ReviewIcon} label={t('dashboard.pendingReviews')} value={overview.pendingReviews} />
         </Grid>
-      {/* </Grid>
+      </Grid>
 
-      <Grid container spacing={2} sx={{ mb: 3 }}> */}
+      <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard icon={ImageIcon} label="Total images" value={overview.totalImages} accent="secondary.main" />
         </Grid>

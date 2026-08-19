@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { TextField, MenuItem, Grid, IconButton, Stack, Autocomplete, Chip } from '@mui/material';
+import { TextField, MenuItem, Grid, IconButton, Stack, Autocomplete, Chip, FormControlLabel, Checkbox, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/EditOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineRounded';
 import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
+import StarIcon from '@mui/icons-material/Star';
 import PageHeader from '../components/PageHeader';
 import DataTable from '../components/DataTable';
 import EntityDialog from '../components/EntityDialog';
@@ -35,7 +36,7 @@ export default function Chalets() {
 
   const openCreate = () => {
     setEditing(null);
-    reset({ name: '', address: '', city: '', country: '', capacity: 2, bedrooms: 1, bathrooms: 1, basePrice: '', status: 'draft', amenityIds: [] });
+    reset({ name: '', address: '', city: '', country: '', capacity: 2, bedrooms: 1, bathrooms: 1, basePrice: '', status: 'draft', amenityIds: [], important: false });
     setDialogOpen(true);
   };
 
@@ -56,6 +57,7 @@ export default function Chalets() {
       status: full.status,
       description: full.description || '',
       amenityIds: (full.amenities || []).map((a) => a.id),
+      important: !!full.important,
     });
     setDialogOpen(true);
   };
@@ -99,7 +101,20 @@ export default function Chalets() {
   };
 
   const columns = [
-    { key: 'name', label: 'Name', render: (r) => <strong>{r.name}</strong> },
+    {
+      key: 'name',
+      label: 'Name',
+      render: (r) => (
+        <Stack direction="row" alignItems="center" spacing={0.5}>
+          {r.important && (
+            <Tooltip title="Featured on homepage">
+              <StarIcon fontSize="small" color="secondary" />
+            </Tooltip>
+          )}
+          <strong>{r.name}</strong>
+        </Stack>
+      ),
+    },
     { key: 'city', label: 'City', render: (r) => `${r.city}, ${r.country}` },
     { key: 'capacity', label: 'Capacity', render: (r) => `${r.capacity} guests · ${r.bedrooms} bed` },
     { key: 'base_price', label: 'Base price', render: (r) => <span className="mono">${Number(r.base_price).toFixed(2)}</span> },
@@ -180,6 +195,12 @@ export default function Chalets() {
                 <MenuItem key={s} value={s}>{s}</MenuItem>
               ))}
             </TextField>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={<Checkbox {...register('important')} defaultChecked={false} />}
+              label="Featured (À la une) — show in the 'Les plus demandés' section on the homepage"
+            />
           </Grid>
           <Grid item xs={12}>
             <TextField fullWidth multiline rows={3} label="Description" {...register('description')} />
