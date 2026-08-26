@@ -1,0 +1,92 @@
+const HOTELS = [
+  {
+    name: 'Hotel Dar Tunis',
+    slug: 'hotel-dar-tunis',
+    description: "Hôtel élégant au cœur de Tunis, à deux pas de la Médina et de l'avenue Habib Bourguiba.",
+    address: '15 Avenue Habib Bourguiba',
+    city: 'Tunis',
+    country: 'Tunisie',
+    latitude: 36.8065,
+    longitude: 10.1815,
+    star_rating: 4,
+    base_price: 120.0,
+    currency: 'TND',
+    services: JSON.stringify(['breakfast', 'wifi', 'parking']),
+    status: 'published',
+    important: true,
+  },
+  {
+    name: 'Hammamet Beach Resort',
+    slug: 'hammamet-beach-resort',
+    description: 'Resort en bord de mer avec accès direct à la plage, spa et piscine à débordement.',
+    address: 'Route Touristique',
+    city: 'Hammamet',
+    country: 'Tunisie',
+    latitude: 36.4,
+    longitude: 10.6167,
+    star_rating: 5,
+    base_price: 210.0,
+    currency: 'TND',
+    services: JSON.stringify(['breakfast', 'spa', 'pool', 'gym']),
+    status: 'published',
+    important: true,
+  },
+  {
+    name: 'Djerba Sunset Hotel',
+    slug: 'djerba-sunset-hotel',
+    description: "Hôtel familial sur l'île de Djerba, ambiance décontractée et couchers de soleil inoubliables.",
+    address: 'Zone Touristique Midoun',
+    city: 'Djerba',
+    country: 'Tunisie',
+    latitude: 33.8076,
+    longitude: 10.9925,
+    star_rating: 4,
+    base_price: 150.0,
+    currency: 'TND',
+    services: JSON.stringify(['breakfast', 'pool', 'kids-club']),
+    status: 'published',
+    important: false,
+  },
+  {
+    name: 'Sousse Palace Hotel',
+    slug: 'sousse-palace-hotel',
+    description: 'Établissement historique proche du port et de la médina classée UNESCO.',
+    address: '2 Rue de la Corniche',
+    city: 'Sousse',
+    country: 'Tunisie',
+    latitude: 35.8256,
+    longitude: 10.6411,
+    star_rating: 3,
+    base_price: 90.0,
+    currency: 'TND',
+    services: JSON.stringify(['breakfast', 'wifi']),
+    status: 'published',
+    important: false,
+  },
+  {
+    name: 'Paris Boutique Hotel',
+    slug: 'paris-boutique-hotel',
+    description: 'Petit hôtel de charme dans le Marais, idéal pour découvrir Paris à pied.',
+    address: '8 Rue des Rosiers',
+    city: 'Paris',
+    country: 'France',
+    latitude: 48.8571,
+    longitude: 2.3617,
+    star_rating: 4,
+    base_price: 180.0,
+    currency: 'EUR',
+    services: JSON.stringify(['wifi', 'breakfast']),
+    status: 'draft',
+    important: false,
+  },
+];
+
+exports.seed = async function (knex) {
+  await knex('hotels').del();
+
+  const admin = await knex('admins').where({ email: 'admin@hotelbooking.com' }).first();
+
+  await knex('hotels').insert(
+    HOTELS.map((h) => ({ ...h, created_by: admin ? admin.id : null }))
+  );
+};
