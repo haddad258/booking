@@ -1,0 +1,392 @@
+@import "tailwindcss";
+
+/* Enables the `dark:` variant, driven by a `.dark` class on <html>.
+   Kept for any future utility-level overrides; most theming below is done
+   via CSS custom properties so existing class names keep working as-is. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ----------------------------------------------------------------------
+   "Field Guide" — an expedition-journal / passport-stamp identity for the
+   booking experience. Deliberately the opposite instinct from a punchy
+   app-like coral-on-navy OTA: this reads like a well-worn travel notebook —
+   aged stone paper, deep pine ink, a brass compass accent, a serif with
+   real character, and a mono face reserved for prices, stamps, and codes.
+   Load the fonts however the app already loads "Outfit" (e.g. a <link> in
+   index.html or a self-hosted @font-face block):
+     Fraunces        — display serif, editorial, warm ink-traps
+     Public Sans     — body sans, plain and legible
+     Space Mono      — utility face: prices, dates, stamp/ticket codes
+---------------------------------------------------------------------- */
+
+@theme {
+  /* "brand" — deep pine/spruce scale. Plays the role the navy scale used
+     to: primary ink, dark surfaces, the --accent token in dark mode. */
+  --color-brand-50: #eef4f0;
+  --color-brand-100: #d7e4dc;
+  --color-brand-200: #b0c9bb;
+  --color-brand-300: #86ab97;
+  --color-brand-400: #5c8a73;
+  --color-brand-500: #3a6b54;
+  --color-brand-600: #26543f;
+  --color-brand-700: #1a3f30;
+  --color-brand-800: #142e23;
+  --color-brand-900: #0b1a14;
+
+  /* "gold" — brass/compass scale. Same role the coral scale used to play
+     (the vivid accent), now literally brass: used sparingly, for stamps,
+     badges, and calls to action rather than blanketing the UI. */
+  --color-gold-50: #faf3e6;
+  --color-gold-100: #f3e4c2;
+  --color-gold-200: #e8cb8c;
+  --color-gold-300: #d9ac5c;
+  --color-gold-400: #c28f3d;
+  --color-gold-500: #a8722f;
+  --color-gold-600: #8a5920;
+  --color-gold-700: #6b4419;
+
+  /* Semantic, theme-aware tokens. Values live in :root / .dark below and are
+     referenced here so every Tailwind utility built from them (text-ink,
+     text-ink/50, bg-canvas, bg-surface, bg-hover, bg-muted…) automatically
+     flips when `.dark` is toggled on <html>. */
+  --color-ink: var(--ink);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-hover: var(--hover);
+  --color-muted: var(--muted);
+  --color-border: var(--border-c);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Public Sans", -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Space Mono", "IBM Plex Mono", ui-monospace, monospace;
+}
+
+:root {
+  --ink: #1c2a24;
+  --canvas: #e9e4d5;
+  --surface: #f7f4ea;
+  --surface-2: #efe9d8;
+  --hover: #e2ddc9;
+  --muted: #ddd4bd;
+  --border-c: rgba(28, 42, 36, 0.14);
+  --border-strong: rgba(28, 42, 36, 0.28);
+  --accent: #1a3f30;
+
+  color-scheme: light;
+}
+
+.dark {
+  --ink: #ece6d4;
+  --canvas: #0b1a14;
+  --surface: #142e23;
+  --surface-2: #1a3f30;
+  --hover: #1f4a38;
+  --muted: #26543f;
+  --border-c: rgba(236, 230, 212, 0.1);
+  --border-strong: rgba(236, 230, 212, 0.2);
+  --accent: #d9ac5c;
+
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+    /* faint paper grain — subtle, not a texture-pack cliché */
+    background-image: radial-gradient(
+      color-mix(in oklab, var(--ink) 4%, transparent) 1px,
+      transparent 1px
+    );
+    background-size: 3px 3px;
+  }
+  ::selection {
+    @apply bg-gold-200 text-ink;
+  }
+  h1,
+  h2,
+  h3,
+  .font-display {
+    letter-spacing: -0.01em;
+  }
+}
+
+/* ----------------------------------------------------------------------
+   Dark-mode overrides for the handful of raw Tailwind utility classes used
+   throughout the app for surfaces, borders, and status colors that carry a
+   *fixed* Tailwind palette color (e.g. `bg-white`, `border-brand-800/10`,
+   `bg-red-50`) rather than one of the semantic tokens above. These live
+   outside any @layer, so — per CSS cascade-layer rules — they always beat
+   the layered Tailwind utilities they override, regardless of source order
+   or specificity. This lets every existing component keep its original
+   className strings unchanged while still adapting to dark mode. */
+
+.dark .bg-white {
+  background-color: var(--surface);
+}
+.dark .bg-white\/90 {
+  background-color: color-mix(in oklab, var(--surface) 90%, transparent);
+}
+.dark .bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark .border-brand-800\/10 {
+  border-color: var(--border-c);
+}
+.dark .border-brand-800\/15 {
+  border-color: var(--border-c);
+}
+.dark .border-brand-800\/20 {
+  border-color: var(--border-strong);
+}
+.dark .border-brand-800\/30 {
+  border-color: var(--border-strong);
+}
+.dark .border-brand-800\/40 {
+  border-color: var(--border-strong);
+}
+.dark .border-brand-800 {
+  border-color: var(--border-strong);
+}
+
+.dark .text-brand-700 {
+  color: var(--accent);
+}
+
+/* Status / alert palettes (form errors, badges) — brightened + given a
+   translucent fill so they stay legible on dark surfaces. */
+.dark .bg-red-50 {
+  background-color: rgba(248, 113, 113, 0.12);
+}
+.dark .text-red-700 {
+  color: #fca5a5;
+}
+.dark .border-red-200 {
+  border-color: rgba(248, 113, 113, 0.25);
+}
+.dark .hover\:bg-red-50:hover {
+  background-color: rgba(248, 113, 113, 0.12);
+}
+
+.dark .bg-emerald-50 {
+  background-color: rgba(52, 211, 153, 0.12);
+}
+.dark .text-emerald-700 {
+  color: #6ee7b7;
+}
+.dark .border-emerald-200 {
+  border-color: rgba(52, 211, 153, 0.25);
+}
+
+.dark .bg-amber-50 {
+  background-color: rgba(251, 191, 36, 0.14);
+}
+.dark .text-amber-700 {
+  color: #fcd34d;
+}
+.dark .border-amber-200 {
+  border-color: rgba(251, 191, 36, 0.28);
+}
+
+.dark .bg-gold-100 {
+  background-color: rgba(217, 172, 92, 0.16);
+}
+.dark .text-gold-700 {
+  color: var(--color-gold-300);
+}
+.dark .border-gold-200 {
+  border-color: rgba(217, 172, 92, 0.3);
+}
+
+.dark .border-brand-200 {
+  border-color: var(--border-strong);
+}
+
+.dark .bg-brand-800\/10 {
+  background-color: var(--border-strong);
+}
+.dark .text-brand-800\/20 {
+  color: var(--border-strong);
+}
+.dark .text-brand-800\/15 {
+  color: var(--border-strong);
+}
+
+/* Leaflet renders its popup chrome outside React via its own stylesheet, so
+   it needs a direct dark-mode treatment. The OSM tile layer itself is left
+   alone, but is very slightly warmed/dimmed so it sits with the paper UI
+   instead of glaring next to it. */
+.dark .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-tip {
+  background: var(--surface);
+  color: var(--ink);
+}
+.dark .leaflet-container {
+  background: var(--surface-2);
+}
+.dark .leaflet-tile-pane {
+  filter: brightness(0.82) saturate(0.85) sepia(0.08);
+}
+.dark .leaflet-bar a {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--border-c) !important;
+}
+.dark .leaflet-bar a:hover {
+  background: var(--hover);
+}
+
+@layer utilities {
+  .glass {
+    background: color-mix(in oklab, var(--canvas) 78%, transparent);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+  }
+  .hover-lift {
+    transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px) rotate(-0.3deg);
+    box-shadow: 0 24px 48px -16px rgba(13, 19, 33, 0.22);
+  }
+  .dark .hover-lift:hover {
+    box-shadow: 0 24px 48px -16px rgba(0, 0, 0, 0.6);
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* --- Signature motifs -------------------------------------------- */
+
+  /* Dashed "route line" divider — a flight/trail path across the page
+     rather than a plain hairline rule. */
+  .route-divider {
+    height: 1px;
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--border-strong) 0,
+      var(--border-strong) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+  }
+
+  /* Passport-stamp badge treatment: a rotated, double-ringed mark used
+     for listing tags ("Featured", "New", availability). */
+  .stamp {
+    @apply font-mono text-[11px] uppercase tracking-widest;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.6rem;
+    border: 1.5px solid currentColor;
+    border-radius: 9999px;
+    transform: rotate(-3deg);
+    position: relative;
+  }
+  .stamp::before {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border: 1px solid currentColor;
+    border-radius: 9999px;
+    opacity: 0.5;
+  }
+
+  /* Ticket-stub card edge: a torn/perforated top edge using a repeating
+     radial-gradient mask, for listing and pricing cards. */
+  .ticket-edge {
+    position: relative;
+  }
+  .ticket-edge::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background-image: radial-gradient(circle at 6px 6px, var(--canvas) 6px, transparent 6.5px);
+    background-size: 12px 12px;
+    background-repeat: repeat-x;
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Smooth cross-fade whenever the theme is toggled: any element whose color
+   depends on the tokens above (backgrounds, text, borders) eases instead of
+   snapping. Disabled during page load via the .theme-ready gate in main.jsx
+   so there's no flash of transitioning colors on first paint. */
+.theme-ready * {
+  transition: background-color 320ms ease, border-color 320ms ease, color 320ms ease,
+    box-shadow 320ms ease, fill 320ms ease, stroke 320ms ease;
+}
+
+/* If the browser supports the View Transitions API, use it for an even
+   smoother, softly-clipped cross-fade of the whole page when the toggle is
+   pressed (ThemeContext triggers this). Falls back silently otherwise. */
+::view-transition-old(theme-root),
+::view-transition-new(theme-root) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-pop-in {
+  animation: pop-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* Stamp-in: a small rotate + scale settle, for the passport-stamp badges
+   above — reads like a stamp landing on paper rather than a generic pop. */
+@keyframes stamp-in {
+  from {
+    opacity: 0;
+    transform: scale(1.6) rotate(-14deg);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(-3deg);
+  }
+}
+.animate-stamp-in {
+  animation: stamp-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
