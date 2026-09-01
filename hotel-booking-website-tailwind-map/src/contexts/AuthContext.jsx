@@ -28,8 +28,8 @@ export function AuthProvider({ children }) {
     loadUser();
   }, [loadUser]);
 
-  const login = async (email, password) => {
-    const loggedInUser = await authService.login(email, password);
+  const login = async (username, password) => {
+    const loggedInUser = await authService.login(username, password);
     setUser(loggedInUser);
     return loggedInUser;
   };

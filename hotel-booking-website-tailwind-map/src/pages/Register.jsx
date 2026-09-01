@@ -13,14 +13,18 @@ export default function Register() {
   const navigate = useNavigate();
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [createdUsername, setCreatedUsername] = useState(null);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (values) => {
     setLoading(true);
     setServerError('');
     try {
-      await registerCustomer(values);
-      navigate('/', { replace: true });
+      const newUser = await registerCustomer(values);
+      // The username is system-generated (e.g. "john.doe") — surface it
+      // immediately rather than silently redirecting, since it's the only
+      // way the user finds out what to log in with later.
+      setCreatedUsername(newUser.username);
     } catch (err) {
       setServerError(apiErrorMessage(err));
     } finally {
@@ -28,9 +32,23 @@ export default function Register() {
     }
   };
 
+  if (createdUsername) {
+    return (
+      <div className="text-center">
+        <h1 className="font-display mb-4 text-2xl font-semibold text-ink dark:text-white">{t('nav.register')} 🎉</h1>
+        <div className="mx-auto mb-6 max-w-xs rounded-xl bg-gold-50 dark:bg-gold-500/10 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gold-700 dark:text-gold-300">{t('auth.generatedUsername')}</p>
+          <p className="font-mono text-lg font-bold text-ink dark:text-white">{createdUsername}</p>
+          <p className="mt-1 text-xs text-ink/55 dark:text-white/55">{t('auth.generatedUsernameHint')}</p>
+        </div>
+        <Button onClick={() => navigate('/')}>Continue</Button>
+      </div>
+    );
+  }
+
   return (
     <div>
-      <h1 className="font-display mb-6 text-2xl font-semibold text-ink">{t('auth.register')}</h1>
+      <h1 className="font-display mb-6 text-2xl font-semibold text-ink dark:text-white">{t('auth.register')}</h1>
       {serverError && <div className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{serverError}</div>}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
@@ -48,8 +66,8 @@ export default function Register() {
         />
         <Button type="submit" fullWidth size="lg" disabled={loading}>{t('nav.register')}</Button>
       </form>
-      <p className="mt-6 text-center text-sm text-ink/60">
-        {t('auth.haveAccount')} <RouterLink to="/login" className="font-semibold text-brand-700 hover:underline">{t('nav.login')}</RouterLink>
+      <p className="mt-6 text-center text-sm text-ink/60 dark:text-white/60">
+        {t('auth.haveAccount')} <RouterLink to="/login" className="font-semibold text-brand-700 dark:text-brand-200 hover:underline">{t('nav.login')}</RouterLink>
       </p>
     </div>
   );

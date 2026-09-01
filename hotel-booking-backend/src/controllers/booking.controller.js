@@ -9,6 +9,19 @@ const create = catchAsync(async (req, res) => {
   ApiResponse.send(res, { statusCode: 201, message: 'Booking created', data: booking });
 });
 
+/**
+ * Public checkout — no authentication required. Always creates a Customer
+ * record; optionally issues login tokens if the shopper ticked "create an
+ * account". See booking.service#createGuestBooking.
+ */
+const createGuest = catchAsync(async (req, res) => {
+  const { booking, customer, tokens } = await bookingService.createGuestBooking(req.body);
+  const message = tokens
+    ? `Booking created and account set up — your username is "${customer.username}".`
+    : 'Booking created';
+  ApiResponse.send(res, { statusCode: 201, message, data: { booking, customer, tokens } });
+});
+
 const myBookings = catchAsync(async (req, res) => {
   const { data, page, limit, total } = await bookingService.listBookings(req.query, { customerId: req.customer.id });
   ApiResponse.paginated(res, { data, page, limit, total });
@@ -41,4 +54,4 @@ const updateStatus = catchAsync(async (req, res) => {
   ApiResponse.send(res, { message: 'Booking status updated', data: booking });
 });
 
-module.exports = { create, myBookings, getMyBookingById, cancel, list, getById, updateStatus };
+module.exports = { create, createGuest, myBookings, getMyBookingById, cancel, list, getById, updateStatus };

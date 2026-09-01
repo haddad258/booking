@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Paper, Typography, Grid, Stack, Button, CircularProgress, MenuItem, TextField } from '@mui/material';
+import { Box, Paper, Typography, Grid, Stack, Button, CircularProgress, MenuItem, TextField, Chip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBackRounded';
 import PageHeader from '../components/PageHeader';
 import StatusChip from '../components/StatusChip';
@@ -60,6 +60,16 @@ export default function CustomerDetail() {
               <Box>
                 <Typography variant="caption" color="text.secondary">Phone</Typography>
                 <Typography>{customer.phone || '—'}</Typography>
+              </Box>
+              <Box>
+                <Typography variant="caption" color="text.secondary">Login</Typography>
+                {customer.is_guest ? (
+                  <Box>
+                    <Chip label="Guest checkout — no login credentials" size="small" variant="outlined" />
+                  </Box>
+                ) : (
+                  <Typography className="mono">{customer.username}</Typography>
+                )}
               </Box>
               <Box>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>Status</Typography>

@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import useFavorites from '../hooks/useFavorites';
 import Button from './ui/Button';
 import Drawer from './ui/Drawer';
+import ThemeToggle from './ThemeToggle';
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -48,11 +49,11 @@ export default function Header() {
     <header
       className={[
         'glass sticky top-0 z-40 border-b transition-shadow',
-        scrolled ? 'border-brand-800/10 shadow-[0_4px_24px_-8px_rgba(13,19,33,0.18)]' : 'border-transparent',
+        scrolled ? 'border-brand-800/10 dark:border-white/10 shadow-[0_4px_24px_-8px_rgba(13,19,33,0.18)]' : 'border-transparent',
       ].join(' ')}
     >
       <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 sm:px-6">
-        <button className="mr-1 rounded-lg p-2 hover:bg-brand-50 md:hidden" onClick={() => setMobileOpen(true)}>
+        <button className="mr-1 rounded-lg p-2 hover:bg-brand-50 dark:bg-white/5 dark:hover:bg-white/10 md:hidden" onClick={() => setMobileOpen(true)}>
           <Bars3Icon className="h-6 w-6" />
         </button>
 
@@ -60,7 +61,7 @@ export default function Header() {
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-brand-800">
             <MapIcon className="h-5 w-5 text-gold-300" />
           </span>
-          <span className="font-display text-2xl font-semibold text-ink">{t('app.name')}</span>
+          <span className="font-display text-2xl font-semibold text-ink dark:text-white">{t('app.name')}</span>
         </RouterLink>
 
         <nav className="hidden flex-1 items-center gap-1 md:flex">
@@ -68,7 +69,7 @@ export default function Header() {
             <RouterLink
               key={link.to}
               to={link.to}
-              className="rounded-full px-3.5 py-2 text-sm font-semibold text-ink/80 transition hover:bg-brand-50 hover:text-ink"
+              className="rounded-full px-3.5 py-2 text-sm font-semibold text-ink/80 dark:text-white/80 transition hover:bg-brand-50 dark:bg-white/5 dark:hover:bg-white/10 hover:text-ink dark:text-white"
             >
               {t(link.label)}
             </RouterLink>
@@ -77,7 +78,7 @@ export default function Header() {
 
         <div className="flex flex-1 justify-end md:flex-none" />
 
-        <RouterLink to="/favorites" className="relative rounded-lg p-2 hover:bg-brand-50" title="Saved properties">
+        <RouterLink to="/favorites" className="relative rounded-lg p-2 hover:bg-brand-50 dark:bg-white/5 dark:hover:bg-white/10" title="Saved properties">
           <HeartIcon className="h-5 w-5" />
           {favorites.length > 0 && (
             <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gold-500 text-[10px] font-bold text-white">
@@ -86,8 +87,10 @@ export default function Header() {
           )}
         </RouterLink>
 
+        <ThemeToggle />
+
         <Menu as="div" className="relative">
-          <MenuButton className="rounded-lg p-2 hover:bg-brand-50">
+          <MenuButton className="rounded-lg p-2 hover:bg-brand-50 dark:bg-white/5 dark:hover:bg-white/10">
             <GlobeAltIcon className="h-5 w-5" />
           </MenuButton>
           <Transition
@@ -95,7 +98,7 @@ export default function Header() {
             enter="transition ease-out duration-100" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100"
             leave="transition ease-in duration-75" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95"
           >
-            <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right rounded-xl border border-brand-800/10 bg-white p-1.5 shadow-xl focus:outline-none">
+            <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right rounded-xl border border-brand-800/10 dark:border-white/10 bg-white dark:bg-brand-800 p-1.5 shadow-xl focus:outline-none">
               {LANGUAGES.map((lang) => (
                 <MenuItem key={lang.code}>
                   {({ focus }) => (
@@ -104,7 +107,7 @@ export default function Header() {
                         i18n.changeLanguage(lang.code);
                         document.dir = lang.code === 'ar' ? 'rtl' : 'ltr';
                       }}
-                      className={`flex w-full items-center rounded-lg px-3 py-2 text-left text-sm ${focus ? 'bg-brand-50' : ''} ${i18n.language === lang.code ? 'font-bold text-brand-700' : 'text-ink'}`}
+                      className={`flex w-full items-center rounded-lg px-3 py-2 text-left text-sm ${focus ? 'bg-brand-50 dark:bg-white/5' : ''} ${i18n.language === lang.code ? 'font-bold text-brand-700 dark:text-brand-200' : 'text-ink dark:text-white'}`}
                     >
                       {lang.label}
                     </button>
@@ -125,23 +128,23 @@ export default function Header() {
               enter="transition ease-out duration-100" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100"
               leave="transition ease-in duration-75" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95"
             >
-              <MenuItems className="absolute right-0 mt-2 w-52 origin-top-right rounded-xl border border-brand-800/10 bg-white p-1.5 shadow-xl focus:outline-none">
+              <MenuItems className="absolute right-0 mt-2 w-52 origin-top-right rounded-xl border border-brand-800/10 dark:border-white/10 bg-white dark:bg-brand-800 p-1.5 shadow-xl focus:outline-none">
                 <MenuItem>
                   {({ focus }) => (
-                    <RouterLink to="/account" className={`block rounded-lg px-3 py-2 text-sm ${focus ? 'bg-brand-50' : ''}`}>{t('nav.account')}</RouterLink>
+                    <RouterLink to="/account" className={`block rounded-lg px-3 py-2 text-sm ${focus ? 'bg-brand-50 dark:bg-white/5' : ''}`}>{t('nav.account')}</RouterLink>
                   )}
                 </MenuItem>
                 <MenuItem>
                   {({ focus }) => (
-                    <RouterLink to="/account/bookings" className={`block rounded-lg px-3 py-2 text-sm ${focus ? 'bg-brand-50' : ''}`}>{t('nav.myBookings')}</RouterLink>
+                    <RouterLink to="/account/bookings" className={`block rounded-lg px-3 py-2 text-sm ${focus ? 'bg-brand-50 dark:bg-white/5' : ''}`}>{t('nav.myBookings')}</RouterLink>
                   )}
                 </MenuItem>
                 <MenuItem>
                   {({ focus }) => (
-                    <RouterLink to="/favorites" className={`block rounded-lg px-3 py-2 text-sm ${focus ? 'bg-brand-50' : ''}`}>{t('nav.favorites')}</RouterLink>
+                    <RouterLink to="/favorites" className={`block rounded-lg px-3 py-2 text-sm ${focus ? 'bg-brand-50 dark:bg-white/5' : ''}`}>{t('nav.favorites')}</RouterLink>
                   )}
                 </MenuItem>
-                <div className="my-1 border-t border-brand-800/10" />
+                <div className="my-1 border-t border-brand-800/10 dark:border-white/10" />
                 <MenuItem>
                   {({ focus }) => (
                     <button onClick={handleLogout} className={`block w-full rounded-lg px-3 py-2 text-left text-sm text-red-600 ${focus ? 'bg-red-50' : ''}`}>{t('nav.logout')}</button>
@@ -165,7 +168,7 @@ export default function Header() {
               key={link.to}
               to={link.to}
               onClick={() => setMobileOpen(false)}
-              className="rounded-lg px-3 py-2.5 font-semibold text-ink hover:bg-brand-50"
+              className="rounded-lg px-3 py-2.5 font-semibold text-ink dark:text-white hover:bg-brand-50 dark:bg-white/5 dark:hover:bg-white/10"
             >
               {t(link.label)}
             </RouterLink>
@@ -173,13 +176,17 @@ export default function Header() {
           <RouterLink
             to="/favorites"
             onClick={() => setMobileOpen(false)}
-            className="flex items-center gap-2 rounded-lg px-3 py-2.5 font-semibold text-ink hover:bg-brand-50"
+            className="flex items-center gap-2 rounded-lg px-3 py-2.5 font-semibold text-ink dark:text-white hover:bg-brand-50 dark:bg-white/5 dark:hover:bg-white/10"
           >
             <HeartIcon className="h-4 w-4" /> {t('nav.favorites')}
-            {favorites.length > 0 && <span className="text-xs font-normal text-ink/50">({favorites.length})</span>}
+            {favorites.length > 0 && <span className="text-xs font-normal text-ink/50 dark:text-white/50">({favorites.length})</span>}
           </RouterLink>
+          <div className="mt-1 flex items-center justify-between rounded-lg px-3 py-2.5">
+            <span className="font-semibold text-ink dark:text-white">Theme</span>
+            <ThemeToggle />
+          </div>
         </nav>
-        <div className="mt-4 flex flex-col gap-2 border-t border-brand-800/10 pt-4">
+        <div className="mt-4 flex flex-col gap-2 border-t border-brand-800/10 dark:border-white/10 pt-4">
           {user ? (
             <>
               <Button to="/account" variant="outline" fullWidth onClick={() => setMobileOpen(false)}>{t('nav.account')}</Button>

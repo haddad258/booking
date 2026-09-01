@@ -34,10 +34,10 @@ export default function PropertyLocationMap({ name, address, city, country, lati
 
   if (!hasCoords) {
     return (
-      <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-brand-800/20 bg-brand-50 text-center sm:h-80">
+      <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-brand-800/20 dark:border-white/20 bg-brand-50 dark:bg-white/5 text-center sm:h-80">
         <div className="px-6">
-          <p className="font-medium text-ink/60">Exact location not available yet</p>
-          <p className="mt-1 text-sm text-ink/45">{address}, {city}, {country}</p>
+          <p className="font-medium text-ink/60 dark:text-white/60">Exact location not available yet</p>
+          <p className="mt-1 text-sm text-ink/45 dark:text-white/45">{address}, {city}, {country}</p>
         </div>
       </div>
     );
@@ -46,7 +46,7 @@ export default function PropertyLocationMap({ name, address, city, country, lati
   const position = [Number(latitude), Number(longitude)];
 
   return (
-    <div className="h-64 overflow-hidden rounded-2xl border border-brand-800/10 sm:h-80">
+    <div className="h-64 overflow-hidden rounded-2xl border border-brand-800/10 dark:border-white/10 sm:h-80">
       <MapContainer
         center={position}
         zoom={14}

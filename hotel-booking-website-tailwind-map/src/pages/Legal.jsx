@@ -1,9 +1,9 @@
 function LegalPage({ title, children }) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-16">
-      <h1 className="font-display mb-2 text-3xl font-semibold text-ink">{title}</h1>
-      <p className="mb-6 text-sm text-ink/45">Last updated: July 2026</p>
-      <div className="space-y-4 text-ink/75">{children}</div>
+      <h1 className="font-display mb-2 text-3xl font-semibold text-ink dark:text-white">{title}</h1>
+      <p className="mb-6 text-sm text-ink/45 dark:text-white/45">Last updated: July 2026</p>
+      <div className="space-y-4 text-ink/75 dark:text-white/75">{children}</div>
     </div>
   );
 }

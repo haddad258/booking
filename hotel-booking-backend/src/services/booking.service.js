@@ -3,6 +3,7 @@ const ApiError = require('../utils/ApiError');
 const { getPagination } = require('../utils/pagination');
 const hotelService = require('./hotel.service');
 const chaletService = require('./chalet.service');
+const customerService = require('./customer.service');
 
 function nightsBetween(checkIn, checkOut) {
   const ms = new Date(checkOut) - new Date(checkIn);
@@ -69,6 +70,31 @@ async function createBooking(customerId, payload) {
   return booking;
 }
 
+/**
+ * Checkout without requiring a prior login. Always creates a Customer
+ * record — either a full account (if `createAccount` is true, with
+ * generated username + issued tokens so the frontend can log the new
+ * user in immediately) or a guest-only record with no login credentials
+ * at all. Reuses `createBooking` for the actual reservation so pricing/
+ * availability logic stays identical to the authenticated path.
+ */
+async function createGuestBooking(payload) {
+  const { firstName, lastName, email, phone, createAccount, password, ...bookingPayload } = payload;
+
+  const { customer, tokens } = await customerService.createCustomerForBooking({
+    firstName,
+    lastName,
+    email,
+    phone,
+    createAccount: !!createAccount,
+    password,
+  });
+
+  const booking = await createBooking(customer.id, bookingPayload);
+
+  return { booking, customer, tokens };
+}
+
 async function listBookings(query, scope = {}) {
   const { page, limit, offset } = getPagination(query);
   const qb = db('bookings').select('*');
@@ -124,6 +150,7 @@ async function cancelBooking(id, customerId) {
 
 module.exports = {
   createBooking,
+  createGuestBooking,
   listBookings,
   getBookingById,
   updateBookingStatus,

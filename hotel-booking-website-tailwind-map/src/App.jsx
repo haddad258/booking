@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import MainLayout from './layouts/MainLayout';
@@ -34,47 +35,49 @@ import NotFound from './pages/NotFound';
 
 export default function App() {
   return (
-    <ToastProvider>
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/hotels" element={<Hotels />} />
-              <Route path="/hotels/:id" element={<HotelDetail />} />
-              <Route path="/chalets" element={<Chalets />} />
-              <Route path="/chalets/:id" element={<ChaletDetail />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogDetail />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/cookies" element={<Cookies />} />
-              <Route path="/favorites" element={<Favorites />} />
-
-              <Route element={<ProtectedRoute />}>
+    <ThemeProvider>
+      <ToastProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <Routes>
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/hotels" element={<Hotels />} />
+                <Route path="/hotels/:id" element={<HotelDetail />} />
+                <Route path="/chalets" element={<Chalets />} />
+                <Route path="/chalets/:id" element={<ChaletDetail />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogDetail />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/cookies" element={<Cookies />} />
+                <Route path="/favorites" element={<Favorites />} />
                 <Route path="/book/:type/:id" element={<BookingWizard />} />
-                <Route element={<AccountLayout />}>
-                  <Route path="/account" element={<AccountDashboard />} />
-                  <Route path="/account/bookings" element={<AccountBookings />} />
-                  <Route path="/account/profile" element={<AccountProfile />} />
-                  <Route path="/account/password" element={<AccountPassword />} />
+
+                <Route element={<ProtectedRoute />}>
+                  <Route element={<AccountLayout />}>
+                    <Route path="/account" element={<AccountDashboard />} />
+                    <Route path="/account/bookings" element={<AccountBookings />} />
+                    <Route path="/account/profile" element={<AccountProfile />} />
+                    <Route path="/account/password" element={<AccountPassword />} />
+                  </Route>
                 </Route>
+
+                <Route path="*" element={<NotFound />} />
               </Route>
 
-              <Route path="*" element={<NotFound />} />
-            </Route>
-
-            <Route element={<AuthLayout />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-            </Route>
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </ToastProvider>
+              <Route element={<AuthLayout />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+              </Route>
+            </Routes>
+          </AuthProvider>
+        </BrowserRouter>
+      </ToastProvider>
+    </ThemeProvider>
   );
 }

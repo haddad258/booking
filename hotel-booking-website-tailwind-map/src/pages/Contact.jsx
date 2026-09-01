@@ -18,11 +18,11 @@ export default function Contact() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-16">
-      <h1 className="font-display mb-2 text-3xl font-semibold text-ink sm:text-4xl">{t('contact.title')}</h1>
-      <p className="mb-8 text-ink/60">{t('contact.subtitle')}</p>
+      <h1 className="font-display mb-2 text-3xl font-semibold text-ink dark:text-white sm:text-4xl">{t('contact.title')}</h1>
+      <p className="mb-8 text-ink/60 dark:text-white/60">{t('contact.subtitle')}</p>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
-        <div className="lg:col-span-3 rounded-2xl border border-brand-800/10 bg-white p-6">
+        <div className="lg:col-span-3 rounded-2xl border border-brand-800/10 dark:border-white/10 bg-white dark:bg-brand-800 p-6">
           {sent && <div className="mb-4 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{t('contact.sent')}</div>}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Input label={t('contact.name')} error={!!errors.name} {...register('name', { required: true })} />
@@ -31,7 +31,7 @@ export default function Contact() {
             <Button type="submit" size="lg">{t('contact.send')}</Button>
           </form>
         </div>
-        <div className="lg:col-span-2 overflow-hidden rounded-2xl border border-brand-800/10">
+        <div className="lg:col-span-2 overflow-hidden rounded-2xl border border-brand-800/10 dark:border-white/10">
           <iframe
             title="map"
             src="https://maps.google.com/maps?q=Paris&t=&z=11&ie=UTF8&iwloc=&output=embed"

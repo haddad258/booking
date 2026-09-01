@@ -7,9 +7,9 @@ const { authLimiter } = require('../middleware/rateLimiter.middleware');
 const validate = require('../middleware/validate.middleware');
 const {
   registerRules,
-  loginRules,
+  customerLoginRules,
   refreshTokenRules,
-  forgotPasswordRules,
+  customerForgotPasswordRules,
   resetPasswordRules,
 } = require('../validators/auth.validator');
 
@@ -37,11 +37,11 @@ router.post('/register', authLimiter, registerRules, validate, authController.re
  *       200:
  *         description: Login successful
  */
-router.post('/login', authLimiter, loginRules, validate, authController.customerLogin);
+router.post('/login', authLimiter, customerLoginRules, validate, authController.customerLogin);
 
 router.post('/refresh-token', refreshTokenRules, validate, authController.refreshCustomerToken);
 router.post('/logout', authenticate, authController.logout);
-router.post('/forgot-password', authLimiter, forgotPasswordRules, validate, authController.forgotPassword);
+router.post('/forgot-password', authLimiter, customerForgotPasswordRules, validate, authController.forgotPassword);
 router.post('/reset-password', authLimiter, resetPasswordRules, validate, authController.resetPassword);
 
 module.exports = router;

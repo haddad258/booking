@@ -24,6 +24,10 @@
     "featuredHotels": "فنادق مميزة",
     "featuredChalets": "شاليهات مميزة",
     "popularDestinations": "وجهات شائعة",
+    "kickerStays": "إقامات مختارة",
+    "kickerDestinations": "إلى أين بعد؟",
+    "kickerRetreats": "ملاذات جبلية",
+    "kickerReviews": "يحبها المسافرون",
     "testimonials": "آراء ضيوفنا",
     "mostRequested": "الأكثر طلبًا",
     "mostRequestedSubtitle": "إقامات مختارة تعرضها فريقنا حاليًا.",
@@ -51,6 +55,7 @@
   },
   "booking": {
     "step1": "بيانات الضيف",
+    "contactStep": "بياناتك",
     "step2": "الدفع",
     "step3": "التأكيد",
     "checkIn": "الوصول",
@@ -66,6 +71,7 @@
     "login": "تسجيل الدخول",
     "register": "أنشئ حسابك",
     "email": "البريد الإلكتروني",
+    "username": "اسم المستخدم",
     "password": "كلمة المرور",
     "firstName": "الاسم الأول",
     "lastName": "اسم العائلة",
@@ -73,7 +79,12 @@
     "forgotPassword": "نسيت كلمة المرور؟",
     "noAccount": "ليس لديك حساب؟",
     "haveAccount": "لديك حساب بالفعل؟",
-    "resetPassword": "إعادة تعيين كلمة المرور"
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "createAccount": "إنشاء حساب",
+    "createAccountHint": "سننشئ لك حساب دخول لإدارة هذا الحجز والحجوزات القادمة.",
+    "generatedUsername": "اسم المستخدم الخاص بك",
+    "generatedUsernameHint": "احتفظ به — ستحتاجه لتسجيل الدخول لاحقًا.",
+    "continueAsGuest": "أنت تكمل بدون حساب — يمكنك متابعة هذا الحجز عبر البريد الإلكتروني."
   },
   "account": {
     "dashboard": "لوحة التحكم",

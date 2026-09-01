@@ -24,6 +24,10 @@
     "featuredHotels": "Hôtels à la une",
     "featuredChalets": "Chalets à la une",
     "popularDestinations": "Destinations populaires",
+    "kickerStays": "Séjours sélectionnés",
+    "kickerDestinations": "Votre prochaine étape",
+    "kickerRetreats": "Refuges en montagne",
+    "kickerReviews": "Apprécié des voyageurs",
     "testimonials": "Ce que disent nos voyageurs",
     "mostRequested": "Les plus demandés",
     "mostRequestedSubtitle": "Une sélection de séjours mis en avant par notre équipe.",
@@ -51,6 +55,7 @@
   },
   "booking": {
     "step1": "Informations voyageur",
+    "contactStep": "Vos coordonnées",
     "step2": "Paiement",
     "step3": "Confirmation",
     "checkIn": "Arrivée",
@@ -66,6 +71,7 @@
     "login": "Connexion",
     "register": "Créer votre compte",
     "email": "Adresse e-mail",
+    "username": "Nom d'utilisateur",
     "password": "Mot de passe",
     "firstName": "Prénom",
     "lastName": "Nom",
@@ -73,7 +79,12 @@
     "forgotPassword": "Mot de passe oublié ?",
     "noAccount": "Pas encore de compte ?",
     "haveAccount": "Déjà un compte ?",
-    "resetPassword": "Réinitialiser le mot de passe"
+    "resetPassword": "Réinitialiser le mot de passe",
+    "createAccount": "Créer un compte",
+    "createAccountHint": "Nous vous créons un accès pour gérer cette réservation et les suivantes.",
+    "generatedUsername": "Votre nom d'utilisateur",
+    "generatedUsernameHint": "Conservez-le — il vous sera demandé pour vous connecter.",
+    "continueAsGuest": "Vous continuez sans compte — vous pouvez suivre cette réservation par e-mail."
   },
   "account": {
     "dashboard": "Tableau de bord",

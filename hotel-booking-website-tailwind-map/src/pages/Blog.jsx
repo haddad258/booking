@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { BLOG_POSTS, BLOG_CATEGORIES } from '../utils/blogData';
 import Badge from '../components/ui/Badge';
+import ResponsiveImage from '../components/ui/ResponsiveImage';
 
 export default function Blog() {
   const { t } = useTranslation();
@@ -18,14 +19,14 @@ export default function Blog() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
-      <h1 className="font-display mb-6 text-3xl font-semibold text-ink sm:text-4xl">{t('nav.blog')}</h1>
+      <h1 className="font-display mb-6 text-3xl font-semibold text-ink dark:text-white sm:text-4xl">{t('nav.blog')}</h1>
 
       <div className="mb-8 flex flex-wrap items-center gap-2">
         <input
           placeholder="Search articles…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="mr-2 min-w-[220px] rounded-xl border border-brand-800/15 px-3.5 py-2 text-sm outline-none focus:border-gold-400"
+          className="mr-2 min-w-[220px] rounded-xl border border-brand-800/15 dark:border-white/15 px-3.5 py-2 text-sm outline-none focus:border-gold-400"
         />
         {BLOG_CATEGORIES.map((c) => (
           <button
@@ -33,7 +34,7 @@ export default function Blog() {
             onClick={() => setCategory(category === c ? null : c)}
             className={[
               'rounded-full border px-3.5 py-1.5 text-sm font-semibold transition',
-              category === c ? 'border-brand-800 bg-brand-800 text-white' : 'border-brand-800/20 text-ink/70 hover:bg-brand-50',
+              category === c ? 'border-brand-800 dark:border-white/20 bg-brand-800 text-white' : 'border-brand-800/20 dark:border-white/20 text-ink/70 dark:text-white/70 hover:bg-brand-50 dark:bg-white/5 dark:hover:bg-white/10',
             ].join(' ')}
           >
             {c}
@@ -43,17 +44,17 @@ export default function Blog() {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((post) => (
-          <RouterLink key={post.slug} to={`/blog/${post.slug}`} className="hover-lift block overflow-hidden rounded-2xl border border-brand-800/10 bg-white">
-            <div className="h-44 overflow-hidden"><img src={post.image} alt={post.title} className="h-full w-full object-cover" /></div>
+          <RouterLink key={post.slug} to={`/blog/${post.slug}`} className="hover-lift block overflow-hidden rounded-2xl border border-brand-800/10 dark:border-white/10 bg-white dark:bg-brand-800">
+            <ResponsiveImage src={post.image} alt={post.title} frameClassName="h-44" />
             <div className="p-4">
               <Badge color="gold" className="mb-2">{post.category}</Badge>
-              <h3 className="font-display mb-1 text-lg font-semibold text-ink">{post.title}</h3>
-              <p className="mb-2 text-sm text-ink/60">{post.excerpt}</p>
-              <p className="text-xs text-ink/40">{format(new Date(post.date), 'MMM d, yyyy')}</p>
+              <h3 className="font-display mb-1 text-lg font-semibold text-ink dark:text-white">{post.title}</h3>
+              <p className="mb-2 text-sm text-ink/60 dark:text-white/60">{post.excerpt}</p>
+              <p className="text-xs text-ink/40 dark:text-white/40">{format(new Date(post.date), 'MMM d, yyyy')}</p>
             </div>
           </RouterLink>
         ))}
-        {filtered.length === 0 && <p className="text-ink/50">No articles match your search.</p>}
+        {filtered.length === 0 && <p className="text-ink/50 dark:text-white/50">No articles match your search.</p>}
       </div>
     </div>
   );

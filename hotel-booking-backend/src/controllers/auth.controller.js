@@ -4,16 +4,20 @@ const authService = require('../services/auth.service');
 
 const register = catchAsync(async (req, res) => {
   const result = await authService.registerCustomer(req.body);
-  ApiResponse.send(res, { statusCode: 201, message: 'Registration successful', data: result });
+  ApiResponse.send(res, {
+    statusCode: 201,
+    message: `Registration successful. Your username is "${result.user.username}" — you'll need it to log in.`,
+    data: result,
+  });
 });
 
 const customerLogin = catchAsync(async (req, res) => {
-  const result = await authService.login({ ...req.body, type: 'customer' });
+  const result = await authService.login({ identifier: req.body.username, password: req.body.password, type: 'customer' });
   ApiResponse.send(res, { message: 'Login successful', data: result });
 });
 
 const adminLogin = catchAsync(async (req, res) => {
-  const result = await authService.login({ ...req.body, type: 'admin' });
+  const result = await authService.login({ identifier: req.body.email, password: req.body.password, type: 'admin' });
   ApiResponse.send(res, { message: 'Login successful', data: result });
 });
 
@@ -34,8 +38,9 @@ const logout = catchAsync(async (req, res) => {
 
 const forgotPassword = catchAsync(async (req, res) => {
   const type = req.baseUrl.includes('admin') ? 'admin' : 'customer';
-  await authService.forgotPassword({ email: req.body.email, type });
-  ApiResponse.send(res, { message: 'If that email exists, a reset link has been sent' });
+  const identifier = type === 'admin' ? req.body.email : req.body.username;
+  await authService.forgotPassword({ identifier, type });
+  ApiResponse.send(res, { message: 'If that account exists, a reset link has been sent' });
 });
 
 const resetPassword = catchAsync(async (req, res) => {

@@ -5,13 +5,19 @@ const bookingController = require('../controllers/booking.controller');
 const paymentController = require('../controllers/payment.controller');
 const { authenticate, requireCustomer, requireAdmin } = require('../middleware/auth.middleware');
 const { requirePermission } = require('../middleware/rbac.middleware');
+const { authLimiter } = require('../middleware/rateLimiter.middleware');
 const validate = require('../middleware/validate.middleware');
 const {
   createBookingRules,
+  createGuestBookingRules,
   updateBookingStatusRules,
   idParamRule,
   listBookingsRules,
 } = require('../validators/booking.validator');
+
+// --- Public: checkout without an existing login (registered BEFORE the
+// blanket `authenticate` below, so it's reachable with no Bearer token) ---
+router.post('/guest', authLimiter, createGuestBookingRules, validate, bookingController.createGuest);
 
 router.use(authenticate);
 

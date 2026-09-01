@@ -42,7 +42,7 @@ export default function Footer() {
             <div className="flex gap-2">
               <input
                 placeholder="you@email.com"
-                className="w-full rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-gold-400"
+                className="w-full rounded-full border border-white/15 bg-white/5 dark:bg-brand-800/5 px-4 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-gold-400"
               />
               <Button variant="primary" size="sm" className="shrink-0">{t('home.newsletterCta')}</Button>
             </div>

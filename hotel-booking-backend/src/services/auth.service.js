@@ -9,8 +9,15 @@ const {
 } = require('../helpers/token.helper');
 const { sendMail, passwordResetEmail } = require('../helpers/mailer.helper');
 const { clientUrl, adminUrl } = require('../config/env');
+const { generateUniqueUsername } = require('../helpers/username.helper');
 
 const TABLES = { admin: 'admins', customer: 'customers' };
+// Admins still authenticate by email (unchanged — they're internal staff
+// accounts, out of scope for the "email/phone are not unique" change,
+// which applies specifically to the Customer model per the booking/guest
+// checkout requirements). Customers authenticate by their unique,
+// system-generated username instead.
+const LOOKUP_FIELD = { admin: 'email', customer: 'username' };
 
 function sanitize(user) {
   if (!user) return user;
@@ -18,12 +25,17 @@ function sanitize(user) {
   return safe;
 }
 
-/** Registers a new customer account (public self-signup). Admins are created via the admin management API only. */
+/**
+ * Registers a new customer account (public self-signup / "create an
+ * account" during checkout). Email is no longer checked for uniqueness —
+ * multiple customers may share an email or phone (see migration
+ * 20260101000004) — the unique login identifier is the auto-generated
+ * `username`, derived from the email's local part (e.g. "john.doe").
+ */
 async function registerCustomer({ firstName, lastName, email, password, phone }) {
-  const existing = await db('customers').where({ email }).first();
-  if (existing) throw ApiError.conflict('An account with this email already exists');
-
   const hashed = await hashPassword(password);
+  const username = await generateUniqueUsername(email);
+
   const [customer] = await db('customers')
     .insert({
       first_name: firstName,
@@ -31,6 +43,8 @@ async function registerCustomer({ firstName, lastName, email, password, phone })
       email,
       password: hashed,
       phone: phone || null,
+      username,
+      is_guest: false,
     })
     .returning('*');
 
@@ -40,14 +54,26 @@ async function registerCustomer({ firstName, lastName, email, password, phone })
   return { user: sanitize(customer), ...tokens };
 }
 
-/** Shared login logic for both admins and customers. */
-async function login({ email, password, type }) {
+/**
+ * Shared login logic for both admins and customers. `identifier` is the
+ * admin's email or the customer's username, depending on `type`.
+ */
+async function login({ identifier, password, type }) {
   const table = TABLES[type];
-  const user = await db(table).where({ email }).first();
-  if (!user) throw ApiError.unauthorized('Invalid email or password');
+  const field = LOOKUP_FIELD[type];
+  const user = await db(table).where({ [field]: identifier }).first();
+  if (!user) throw ApiError.unauthorized(`Invalid ${field} or password`);
+
+  // Guests have no password at all (see customer.service#createCustomerForBooking)
+  // and no username, so this is mostly a defense-in-depth guard — a guest
+  // can never actually reach this point since there's no username to look
+  // up by — but it keeps the invariant explicit.
+  if (type === 'customer' && (user.is_guest || !user.password)) {
+    throw ApiError.unauthorized('Invalid username or password');
+  }
 
   const valid = await comparePassword(password, user.password);
-  if (!valid) throw ApiError.unauthorized('Invalid email or password');
+  if (!valid) throw ApiError.unauthorized(`Invalid ${field} or password`);
 
   if (user.status !== 'active') throw ApiError.forbidden('Account is suspended');
 
@@ -95,25 +121,27 @@ async function logout({ userId, type }) {
   await db(table).where({ id: userId }).update({ refresh_token: null });
 }
 
-/** Sends a password reset email containing a short-lived signed token. */
-async function forgotPassword({ email, type }) {
+/**
+ * Sends a password reset email containing a short-lived signed token.
+ * `identifier` is the admin's email or the customer's username.
+ */
+async function forgotPassword({ identifier, type }) {
   const table = TABLES[type];
-  const user = await db(table).where({ email }).first();
-  // Always respond success-like to the caller to avoid leaking which emails exist;
-  // the controller decides the exact response message.
+  const field = LOOKUP_FIELD[type];
+  const user = await db(table).where({ [field]: identifier }).first();
+  // Always respond success-like to the caller to avoid leaking which
+  // accounts exist; the controller decides the exact response message.
+  // Guests (no username/password) can never match this lookup at all,
+  // so they're naturally excluded — there's nothing to reset.
   if (!user) return;
 
-  // Embed a fingerprint of the current password_changed_at value. If the
-  // password changes by any means before this token is used, the
-  // fingerprint on file no longer matches and the token is rejected —
-  // making every reset token single-use in practice, not just time-limited.
   const pwv = user.password_changed_at ? new Date(user.password_changed_at).getTime() : 0;
   const token = signResetToken({ sub: user.id, type, pwv });
   const baseUrl = type === 'admin' ? adminUrl : clientUrl;
   const resetUrl = `${baseUrl}/reset-password?token=${token}`;
 
   await sendMail({
-    to: email,
+    to: user.email,
     subject: 'Reset your password',
     html: passwordResetEmail(resetUrl),
   });

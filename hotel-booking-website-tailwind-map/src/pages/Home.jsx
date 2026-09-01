@@ -53,10 +53,15 @@ export default function Home() {
     <div>
       {/* Hero */}
       <section
-        className="relative flex min-h-[560px] items-center bg-cover bg-center sm:min-h-[640px]"
+        className="relative flex min-h-[560px] items-center overflow-hidden bg-cover bg-center sm:min-h-[640px]"
         style={{ backgroundImage: `linear-gradient(160deg, rgba(8,18,39,0.68), rgba(244,71,48,0.35)), url(${HERO_IMAGE})` }}
       >
-        <div className="mx-auto w-full max-w-5xl px-4 text-center text-white sm:px-6">
+        <div className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-gold-400/30 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -right-16 h-96 w-96 rounded-full bg-brand-400/20 blur-3xl" />
+        <div className="relative mx-auto w-full max-w-5xl px-4 text-center text-white sm:px-6">
+          <p className="animate-fade-in-up mb-3 text-xs font-bold uppercase tracking-[0.2em] text-gold-200">
+            {t('app.name')}
+          </p>
           <h1 className="font-display animate-fade-in-up mb-4 text-4xl font-semibold leading-tight sm:text-5xl md:text-6xl">
             {t('home.heroTitle')}
           </h1>
@@ -71,7 +76,8 @@ export default function Home() {
 
       {/* Featured hotels */}
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
-        <h2 className="font-display mb-6 text-2xl font-semibold text-ink sm:text-3xl">{t('home.featuredHotels')}</h2>
+        <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-gold-500 dark:text-gold-400">{t('home.kickerStays')}</p>
+        <h2 className="font-display mb-6 text-2xl font-semibold text-ink dark:text-white sm:text-3xl">{t('home.featuredHotels')}</h2>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {hotels.map((h) => (
             <PropertyCard key={h.id} property={h} type="hotel" isFavorite={isFavorite('hotel', h.id)} onToggleFavorite={(p) => toggle(p, 'hotel')} />
@@ -80,9 +86,10 @@ export default function Home() {
       </section>
 
       {/* Popular destinations */}
-      <section className="bg-brand-50 py-14 sm:py-20">
+      <section className="bg-brand-50 dark:bg-white/5 py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <h2 className="font-display mb-6 text-2xl font-semibold text-ink sm:text-3xl">{t('home.popularDestinations')}</h2>
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-gold-500 dark:text-gold-400">{t('home.kickerDestinations')}</p>
+          <h2 className="font-display mb-6 text-2xl font-semibold text-ink dark:text-white sm:text-3xl">{t('home.popularDestinations')}</h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {DESTINATIONS.map((d) => (
               <div
@@ -102,7 +109,8 @@ export default function Home() {
 
       {/* Featured chalets */}
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
-        <h2 className="font-display mb-6 text-2xl font-semibold text-ink sm:text-3xl">{t('home.featuredChalets')}</h2>
+        <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-gold-500 dark:text-gold-400">{t('home.kickerRetreats')}</p>
+        <h2 className="font-display mb-6 text-2xl font-semibold text-ink dark:text-white sm:text-3xl">{t('home.featuredChalets')}</h2>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {chalets.map((c) => (
             <PropertyCard key={c.id} property={c} type="chalet" isFavorite={isFavorite('chalet', c.id)} onToggleFavorite={(p) => toggle(p, 'chalet')} />
@@ -111,12 +119,14 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="bg-brand-900 py-14 text-white sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <section className="relative overflow-hidden bg-brand-900 py-14 text-white sm:py-20">
+        <div className="pointer-events-none absolute top-0 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-gold-500/10 blur-3xl" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+          <p className="mb-2 text-center text-xs font-bold uppercase tracking-[0.15em] text-gold-300">{t('home.kickerReviews')}</p>
           <h2 className="font-display mb-8 text-center text-2xl font-semibold sm:text-3xl">{t('home.testimonials')}</h2>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             {TESTIMONIALS.map((tst) => (
-              <div key={tst.name} className="rounded-2xl border border-white/10 bg-white/5 p-6">
+              <div key={tst.name} className="rounded-2xl border border-white/10 bg-white/5 dark:bg-brand-800/5 p-6">
                 <Rating value={tst.rating} className="mb-3" />
                 <p className="mb-4 text-white/85">&ldquo;{tst.quote}&rdquo;</p>
                 <div className="flex items-center gap-2.5">
@@ -134,12 +144,12 @@ export default function Home() {
           anything to show, and not rendered at all if there isn't. */}
       {!featuredLoading && hasFeatured && (
         <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
-          <h2 className="font-display mb-2 text-2xl font-semibold text-ink sm:text-3xl">{t('home.mostRequested')}</h2>
-          <p className="mb-8 text-ink/55">{t('home.mostRequestedSubtitle')}</p>
+          <h2 className="font-display mb-2 text-2xl font-semibold text-ink dark:text-white sm:text-3xl">{t('home.mostRequested')}</h2>
+          <p className="mb-8 text-ink/55 dark:text-white/55">{t('home.mostRequestedSubtitle')}</p>
 
           {featuredHotels.length > 0 && (
             <div className="mb-10">
-              <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-ink/50">
+              <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-ink/50 dark:text-white/50">
                 {t('nav.hotels')}
                 <span className="h-px flex-1 bg-brand-800/10" />
               </h3>
@@ -153,7 +163,7 @@ export default function Home() {
 
           {featuredChalets.length > 0 && (
             <div>
-              <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-ink/50">
+              <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-ink/50 dark:text-white/50">
                 {t('nav.chalets')}
                 <span className="h-px flex-1 bg-brand-800/10" />
               </h3>

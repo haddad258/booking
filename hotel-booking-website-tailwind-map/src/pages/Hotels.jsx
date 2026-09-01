@@ -47,27 +47,27 @@ export default function Hotels() {
   return (
     <div className="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 sm:py-8">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">{t('nav.hotels')}</h1>
+        <h1 className="font-display text-2xl font-bold text-ink dark:text-white sm:text-3xl">{t('nav.hotels')}</h1>
         <div className="flex items-center gap-2">
           <input
             placeholder="Search by name…"
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            className="w-40 rounded-xl border border-brand-800/15 px-3.5 py-2 text-sm outline-none focus:border-gold-400 sm:w-56"
+            className="w-40 rounded-xl border border-brand-800/15 dark:border-white/15 px-3.5 py-2 text-sm outline-none focus:border-gold-400 sm:w-56"
           />
           <Button variant="outline" size="md" onClick={() => setFiltersOpen(true)}>
             <AdjustmentsHorizontalIcon className="h-4 w-4" /> {t('listing.filters')}
           </Button>
-          <div className="flex rounded-xl border border-brand-800/15 p-1 lg:hidden">
+          <div className="flex rounded-xl border border-brand-800/15 dark:border-white/15 p-1 lg:hidden">
             <button
               onClick={() => setMobileView('list')}
-              className={`rounded-lg p-1.5 ${mobileView === 'list' ? 'bg-brand-800 text-white' : 'text-ink/50'}`}
+              className={`rounded-lg p-1.5 ${mobileView === 'list' ? 'bg-brand-800 text-white' : 'text-ink/50 dark:text-white/50'}`}
             >
               <ListBulletIcon className="h-4 w-4" />
             </button>
             <button
               onClick={() => setMobileView('map')}
-              className={`rounded-lg p-1.5 ${mobileView === 'map' ? 'bg-brand-800 text-white' : 'text-ink/50'}`}
+              className={`rounded-lg p-1.5 ${mobileView === 'map' ? 'bg-brand-800 text-white' : 'text-ink/50 dark:text-white/50'}`}
             >
               <MapIcon className="h-4 w-4" />
             </button>
@@ -83,8 +83,8 @@ export default function Hotels() {
               {Array.from({ length: 6 }).map((_, i) => <PropertySkeletonCard key={i} />)}
             </div>
           ) : hotels.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-brand-800/20 py-16 text-center">
-              <p className="mb-3 text-ink/50">{t('listing.noResults')}</p>
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-brand-800/20 dark:border-white/20 py-16 text-center">
+              <p className="mb-3 text-ink/50 dark:text-white/50">{t('listing.noResults')}</p>
               {(search || filters.minPrice || filters.maxPrice || filters.rating) && (
                 <Button
                   variant="outline"
@@ -115,7 +115,7 @@ export default function Hotels() {
                     <button
                       key={p}
                       onClick={() => setPage(p)}
-                      className={`h-9 w-9 rounded-lg text-sm font-semibold transition ${p === page ? 'bg-brand-800 text-white' : 'text-ink/60 hover:bg-brand-50'}`}
+                      className={`h-9 w-9 rounded-lg text-sm font-semibold transition ${p === page ? 'bg-brand-800 text-white' : 'text-ink/60 dark:text-white/60 hover:bg-brand-50 dark:bg-white/5 dark:hover:bg-white/10'}`}
                     >
                       {p}
                     </button>

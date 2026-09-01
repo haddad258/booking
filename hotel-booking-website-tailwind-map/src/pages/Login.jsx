@@ -20,7 +20,7 @@ export default function Login() {
     setLoading(true);
     setServerError('');
     try {
-      await login(values.email, values.password);
+      await login(values.username, values.password);
       navigate(location.state?.from?.pathname || '/', { replace: true });
     } catch (err) {
       setServerError(apiErrorMessage(err));
@@ -31,18 +31,18 @@ export default function Login() {
 
   return (
     <div>
-      <h1 className="font-display mb-6 text-2xl font-semibold text-ink">{t('auth.login')}</h1>
+      <h1 className="font-display mb-6 text-2xl font-semibold text-ink dark:text-white">{t('auth.login')}</h1>
       {serverError && <div className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{serverError}</div>}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <Input label={t('auth.email')} error={!!errors.email} {...register('email', { required: true })} />
+        <Input label={t('auth.username')} error={!!errors.username} {...register('username', { required: true })} />
         <Input type="password" label={t('auth.password')} error={!!errors.password} {...register('password', { required: true })} />
         <div className="text-right">
-          <RouterLink to="/forgot-password" className="text-sm font-semibold text-brand-700 hover:underline">{t('auth.forgotPassword')}</RouterLink>
+          <RouterLink to="/forgot-password" className="text-sm font-semibold text-brand-700 dark:text-brand-200 hover:underline">{t('auth.forgotPassword')}</RouterLink>
         </div>
         <Button type="submit" fullWidth size="lg" disabled={loading}>{t('auth.login')}</Button>
       </form>
-      <p className="mt-6 text-center text-sm text-ink/60">
-        {t('auth.noAccount')} <RouterLink to="/register" className="font-semibold text-brand-700 hover:underline">{t('nav.register')}</RouterLink>
+      <p className="mt-6 text-center text-sm text-ink/60 dark:text-white/60">
+        {t('auth.noAccount')} <RouterLink to="/register" className="font-semibold text-brand-700 dark:text-brand-200 hover:underline">{t('nav.register')}</RouterLink>
       </p>
     </div>
   );

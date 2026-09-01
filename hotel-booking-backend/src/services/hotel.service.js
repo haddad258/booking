@@ -134,18 +134,39 @@ async function addImages(hotelId, files) {
   if (!hotel) throw ApiError.notFound('Hotel not found');
 
   const existingCount = await db('hotel_images').where({ hotel_id: hotelId }).count('* as c').first();
+  const isFirstBatch = Number(existingCount.c) === 0;
   const rows = files.map((file, idx) => ({
     hotel_id: hotelId,
     url: `/uploads/hotels/${file.filename}`,
-    is_cover: Number(existingCount.c) === 0 && idx === 0,
+    is_cover: isFirstBatch && idx === 0,
     sort_order: Number(existingCount.c) + idx,
   }));
-  return db('hotel_images').insert(rows).returning('*');
+  const inserted = await db('hotel_images').insert(rows).returning('*');
+
+  // Keep the denormalized cover_image_url on the hotel row in sync — see
+  // migration 20260101000005_add_cover_image_url.
+  if (isFirstBatch && inserted.length > 0) {
+    await db('hotels').where({ id: hotelId }).update({ cover_image_url: inserted[0].url });
+  }
+
+  return inserted;
 }
 
 async function removeImage(hotelId, imageId) {
-  const deleted = await db('hotel_images').where({ id: imageId, hotel_id: hotelId }).del();
-  if (!deleted) throw ApiError.notFound('Image not found');
+  const image = await db('hotel_images').where({ id: imageId, hotel_id: hotelId }).first();
+  if (!image) throw ApiError.notFound('Image not found');
+
+  await db('hotel_images').where({ id: imageId, hotel_id: hotelId }).del();
+
+  if (image.is_cover) {
+    // The cover image was removed — promote the next remaining image (by
+    // sort order) to cover, or clear cover_image_url if none are left.
+    const nextCover = await db('hotel_images').where({ hotel_id: hotelId }).orderBy('sort_order').first();
+    if (nextCover) {
+      await db('hotel_images').where({ id: nextCover.id }).update({ is_cover: true });
+    }
+    await db('hotels').where({ id: hotelId }).update({ cover_image_url: nextCover ? nextCover.url : null });
+  }
 }
 
 /**
@@ -174,6 +195,7 @@ async function setCoverImage(hotelId, imageId) {
   await db.transaction(async (trx) => {
     await trx('hotel_images').where({ hotel_id: hotelId }).update({ is_cover: false });
     await trx('hotel_images').where({ id: imageId }).update({ is_cover: true });
+    await trx('hotels').where({ id: hotelId }).update({ cover_image_url: image.url });
   });
   return db('hotel_images').where({ hotel_id: hotelId }).orderBy('sort_order');
 }

@@ -2,11 +2,64 @@ const db = require('../config/database');
 const ApiError = require('../utils/ApiError');
 const { hashPassword, comparePassword } = require('../helpers/password.helper');
 const { getPagination } = require('../utils/pagination');
+const { generateUniqueUsername } = require('../helpers/username.helper');
+const { issueTokenPair } = require('../helpers/token.helper');
 
 function sanitize(customer) {
   if (!customer) return customer;
   const { password, refresh_token, ...safe } = customer;
   return safe;
+}
+
+/**
+ * Creates the Customer record for a checkout — used by the guest booking
+ * flow. Every booking creates a Customer row regardless of whether the
+ * shopper opts into an account:
+ *   - createAccount=true: hashes the given password, generates a unique
+ *     username from the email (e.g. "john.doe"), issues a token pair so
+ *     the frontend can log the new user in immediately after booking.
+ *   - createAccount=false: inserts a Customer row with no username/password
+ *     at all (`is_guest: true`) — contact info only, no way to log in.
+ *
+ * Email/phone are intentionally NOT checked for uniqueness here (see
+ * migration 20260101000004) — the same person, or different people
+ * sharing a household email, can check out multiple times.
+ */
+async function createCustomerForBooking({ firstName, lastName, email, phone, createAccount, password }) {
+  if (createAccount) {
+    const hashed = await hashPassword(password);
+    const username = await generateUniqueUsername(email);
+    const [customer] = await db('customers')
+      .insert({
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        phone: phone || null,
+        password: hashed,
+        username,
+        is_guest: false,
+      })
+      .returning('*');
+
+    const tokens = issueTokenPair({ id: customer.id, type: 'customer' });
+    await db('customers').where({ id: customer.id }).update({ refresh_token: tokens.refreshToken });
+
+    return { customer: sanitize(customer), tokens };
+  }
+
+  const [customer] = await db('customers')
+    .insert({
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      phone: phone || null,
+      password: null,
+      username: null,
+      is_guest: true,
+    })
+    .returning('*');
+
+  return { customer: sanitize(customer), tokens: null };
 }
 
 async function listCustomers(query) {
@@ -145,5 +198,6 @@ module.exports = {
   removeFavorite,
   listFavorites,
   getBookingHistory,
+  createCustomerForBooking,
   sanitize,
 };

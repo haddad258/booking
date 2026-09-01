@@ -19,6 +19,24 @@ const createBookingRules = [
   body('notes').optional().isString(),
 ];
 
+// Guest checkout: the booking fields above, plus the contact info needed
+// to create the Customer record, plus an optional account-creation step.
+const createGuestBookingRules = [
+  ...createBookingRules,
+  body('firstName').trim().notEmpty().withMessage('First name is required'),
+  body('lastName').trim().notEmpty().withMessage('Last name is required'),
+  body('email').trim().isEmail().withMessage('A valid email is required').normalizeEmail(),
+  body('phone').optional().isString(),
+  body('createAccount').optional().isBoolean(),
+  body('password').custom((value, { req }) => {
+    const wantsAccount = req.body.createAccount === true || req.body.createAccount === 'true';
+    if (!wantsAccount) return true;
+    if (!value || value.length < 8) throw new Error('Password must be at least 8 characters');
+    if (!/\d/.test(value)) throw new Error('Password must contain at least one number');
+    return true;
+  }),
+];
+
 const updateBookingStatusRules = [
   param('id').isInt().withMessage('Invalid booking id'),
   body('status').isIn(['pending', 'confirmed', 'cancelled', 'completed']).withMessage('Invalid status'),
@@ -33,4 +51,4 @@ const listBookingsRules = [
   query('bookableType').optional().isIn(['hotel', 'chalet']),
 ];
 
-module.exports = { createBookingRules, updateBookingStatusRules, idParamRule, listBookingsRules };
+module.exports = { createBookingRules, createGuestBookingRules, updateBookingStatusRules, idParamRule, listBookingsRules };

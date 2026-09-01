@@ -40,8 +40,8 @@ export default function Favorites() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
-      <h1 className="font-display mb-1 text-3xl font-semibold text-ink sm:text-4xl">Saved properties</h1>
-      <p className="mb-8 text-ink/55">
+      <h1 className="font-display mb-1 text-3xl font-semibold text-ink dark:text-white sm:text-4xl">Saved properties</h1>
+      <p className="mb-8 text-ink/55 dark:text-white/55">
         {isGuest
           ? "Saved on this device. Log in to keep them synced across devices."
           : 'Synced to your account.'}
@@ -52,10 +52,10 @@ export default function Favorites() {
           {Array.from({ length: 3 }).map((_, i) => <PropertySkeletonCard key={i} />)}
         </div>
       ) : properties.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-brand-800/20 py-20 text-center">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-brand-800/20 dark:border-white/20 py-20 text-center">
           <HeartIcon className="mb-3 h-12 w-12 text-brand-800/20" />
-          <p className="mb-1 font-medium text-ink">No saved properties yet</p>
-          <p className="mb-5 max-w-sm text-sm text-ink/50">
+          <p className="mb-1 font-medium text-ink dark:text-white">No saved properties yet</p>
+          <p className="mb-5 max-w-sm text-sm text-ink/50 dark:text-white/50">
             Tap the heart icon on any hotel or chalet to save it here for later.
           </p>
           <div className="flex gap-3">

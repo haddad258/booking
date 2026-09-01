@@ -133,18 +133,35 @@ async function addImages(chaletId, files) {
   if (!chalet) throw ApiError.notFound('Chalet not found');
 
   const existingCount = await db('chalet_images').where({ chalet_id: chaletId }).count('* as c').first();
+  const isFirstBatch = Number(existingCount.c) === 0;
   const rows = files.map((file, idx) => ({
     chalet_id: chaletId,
     url: `/uploads/chalets/${file.filename}`,
-    is_cover: Number(existingCount.c) === 0 && idx === 0,
+    is_cover: isFirstBatch && idx === 0,
     sort_order: Number(existingCount.c) + idx,
   }));
-  return db('chalet_images').insert(rows).returning('*');
+  const inserted = await db('chalet_images').insert(rows).returning('*');
+
+  if (isFirstBatch && inserted.length > 0) {
+    await db('chalets').where({ id: chaletId }).update({ cover_image_url: inserted[0].url });
+  }
+
+  return inserted;
 }
 
 async function removeImage(chaletId, imageId) {
-  const deleted = await db('chalet_images').where({ id: imageId, chalet_id: chaletId }).del();
-  if (!deleted) throw ApiError.notFound('Image not found');
+  const image = await db('chalet_images').where({ id: imageId, chalet_id: chaletId }).first();
+  if (!image) throw ApiError.notFound('Image not found');
+
+  await db('chalet_images').where({ id: imageId, chalet_id: chaletId }).del();
+
+  if (image.is_cover) {
+    const nextCover = await db('chalet_images').where({ chalet_id: chaletId }).orderBy('sort_order').first();
+    if (nextCover) {
+      await db('chalet_images').where({ id: nextCover.id }).update({ is_cover: true });
+    }
+    await db('chalets').where({ id: chaletId }).update({ cover_image_url: nextCover ? nextCover.url : null });
+  }
 }
 
 async function reorderImages(chaletId, imageIds) {
@@ -166,6 +183,7 @@ async function setCoverImage(chaletId, imageId) {
   await db.transaction(async (trx) => {
     await trx('chalet_images').where({ chalet_id: chaletId }).update({ is_cover: false });
     await trx('chalet_images').where({ id: imageId }).update({ is_cover: true });
+    await trx('chalets').where({ id: chaletId }).update({ cover_image_url: image.url });
   });
   return db('chalet_images').where({ chalet_id: chaletId }).orderBy('sort_order');
 }

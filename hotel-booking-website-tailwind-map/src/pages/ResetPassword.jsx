@@ -31,7 +31,7 @@ export default function ResetPassword() {
 
   return (
     <div>
-      <h1 className="font-display mb-6 text-2xl font-semibold text-ink">{t('auth.resetPassword')}</h1>
+      <h1 className="font-display mb-6 text-2xl font-semibold text-ink dark:text-white">{t('auth.resetPassword')}</h1>
       {!token && <div className="mb-4 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-700">Missing or invalid reset link.</div>}
       {error && <div className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

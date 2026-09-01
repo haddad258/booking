@@ -12,8 +12,16 @@ const registerRules = [
   body('phone').optional().isString(),
 ];
 
-const loginRules = [
+// Admins still log in by email — only customer auth switched to username
+// (see AUDIT/booking-guest-checkout requirements: email/phone are contact
+// info only for customers, not unique, so they can't identify an account).
+const adminLoginRules = [
   body('email').trim().isEmail().withMessage('A valid email is required').normalizeEmail(),
+  body('password').notEmpty().withMessage('Password is required'),
+];
+
+const customerLoginRules = [
+  body('username').trim().notEmpty().withMessage('Username is required'),
   body('password').notEmpty().withMessage('Password is required'),
 ];
 
@@ -21,8 +29,12 @@ const refreshTokenRules = [
   body('refreshToken').notEmpty().withMessage('Refresh token is required'),
 ];
 
-const forgotPasswordRules = [
+const adminForgotPasswordRules = [
   body('email').trim().isEmail().withMessage('A valid email is required').normalizeEmail(),
+];
+
+const customerForgotPasswordRules = [
+  body('username').trim().notEmpty().withMessage('Username is required'),
 ];
 
 const resetPasswordRules = [
@@ -36,8 +48,10 @@ const resetPasswordRules = [
 
 module.exports = {
   registerRules,
-  loginRules,
+  adminLoginRules,
+  customerLoginRules,
   refreshTokenRules,
-  forgotPasswordRules,
+  adminForgotPasswordRules,
+  customerForgotPasswordRules,
   resetPasswordRules,
 };

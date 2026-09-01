@@ -13,22 +13,22 @@ export default function AccountDashboard() {
   }, []);
 
   return (
-    <div className="rounded-2xl border border-brand-800/10 bg-white p-6">
+    <div className="rounded-2xl border border-brand-800/10 dark:border-white/10 bg-white dark:bg-brand-800 p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="font-display text-lg font-semibold text-ink">Recent bookings</h2>
-        <RouterLink to="/account/bookings" className="text-sm font-semibold text-brand-700 hover:underline">View all</RouterLink>
+        <h2 className="font-display text-lg font-semibold text-ink dark:text-white">Recent bookings</h2>
+        <RouterLink to="/account/bookings" className="text-sm font-semibold text-brand-700 dark:text-brand-200 hover:underline">View all</RouterLink>
       </div>
 
       {loading ? (
         <Spinner className="h-6 w-6" />
       ) : bookings.length === 0 ? (
-        <p className="text-sm text-ink/50">You haven't made any bookings yet.</p>
+        <p className="text-sm text-ink/50 dark:text-white/50">You haven't made any bookings yet.</p>
       ) : (
         <div className="flex flex-col gap-3">
           {bookings.map((b) => (
-            <div key={b.id} className="rounded-xl border border-brand-800/10 p-4">
-              <p className="font-mono font-bold text-ink">{b.booking_number}</p>
-              <p className="text-sm text-ink/60">
+            <div key={b.id} className="rounded-xl border border-brand-800/10 dark:border-white/10 p-4">
+              <p className="font-mono font-bold text-ink dark:text-white">{b.booking_number}</p>
+              <p className="text-sm text-ink/60 dark:text-white/60">
                 {format(new Date(b.check_in), 'MMM d')} → {format(new Date(b.check_out), 'MMM d, yyyy')} · ${Number(b.total_price).toFixed(2)}
               </p>
             </div>

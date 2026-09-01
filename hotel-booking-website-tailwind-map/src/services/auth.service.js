@@ -6,8 +6,11 @@ async function register({ firstName, lastName, email, password, phone }) {
   return data.data.user;
 }
 
-async function login(email, password) {
-  const { data } = await api.post('/auth/customer/login', { email, password });
+// Customer login now uses a system-generated unique username rather than
+// email (email/phone are contact info only and are not unique — see the
+// guest-checkout feature).
+async function login(username, password) {
+  const { data } = await api.post('/auth/customer/login', { username, password });
   tokenStorage.set(data.data);
   return data.data.user;
 }
@@ -20,8 +23,8 @@ async function logout() {
   }
 }
 
-async function forgotPassword(email) {
-  const { data } = await api.post('/auth/customer/forgot-password', { email });
+async function forgotPassword(username) {
+  const { data } = await api.post('/auth/customer/forgot-password', { username });
   return data;
 }
 

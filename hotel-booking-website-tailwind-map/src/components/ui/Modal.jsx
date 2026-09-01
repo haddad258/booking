@@ -20,10 +20,10 @@ export default function Modal({ open, onClose, title, children, maxWidth = 'max-
             enter="ease-out duration-200" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100"
             leave="ease-in duration-150" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95"
           >
-            <DialogPanel className={`w-full ${maxWidth} rounded-2xl bg-white shadow-2xl`}>
-              <div className="flex items-center justify-between border-b border-brand-800/10 px-6 py-4">
-                <DialogTitle className="text-lg font-bold text-ink">{title}</DialogTitle>
-                <button onClick={onClose} className="rounded-lg p-1 text-ink/50 hover:bg-brand-50 hover:text-ink">
+            <DialogPanel className={`w-full ${maxWidth} rounded-2xl bg-white dark:bg-brand-800 shadow-2xl`}>
+              <div className="flex items-center justify-between border-b border-brand-800/10 dark:border-white/10 px-6 py-4">
+                <DialogTitle className="text-lg font-bold text-ink dark:text-white">{title}</DialogTitle>
+                <button onClick={onClose} className="rounded-lg p-1 text-ink/50 dark:text-white/50 hover:bg-brand-50 dark:bg-white/5 dark:hover:bg-white/10 hover:text-ink dark:text-white">
                   <XMarkIcon className="h-5 w-5" />
                 </button>
               </div>

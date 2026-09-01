@@ -24,6 +24,10 @@
     "featuredHotels": "Featured hotels",
     "featuredChalets": "Featured chalets",
     "popularDestinations": "Popular destinations",
+    "kickerStays": "Curated stays",
+    "kickerDestinations": "Where to next",
+    "kickerRetreats": "Mountain retreats",
+    "kickerReviews": "Loved by travelers",
     "testimonials": "What our guests say",
     "mostRequested": "Most Requested",
     "mostRequestedSubtitle": "Hand-picked stays our team is currently featuring.",
@@ -51,6 +55,7 @@
   },
   "booking": {
     "step1": "Guest details",
+    "contactStep": "Your details",
     "step2": "Payment",
     "step3": "Confirmation",
     "checkIn": "Check-in",
@@ -66,6 +71,7 @@
     "login": "Log in",
     "register": "Create your account",
     "email": "Email address",
+    "username": "Username",
     "password": "Password",
     "firstName": "First name",
     "lastName": "Last name",
@@ -73,7 +79,12 @@
     "forgotPassword": "Forgot password?",
     "noAccount": "Don't have an account?",
     "haveAccount": "Already have an account?",
-    "resetPassword": "Reset password"
+    "resetPassword": "Reset password",
+    "createAccount": "Create an account",
+    "createAccountHint": "We'll set you up with a login so you can manage this booking and future ones.",
+    "generatedUsername": "Your username",
+    "generatedUsernameHint": "Save this — you'll need it to log in next time.",
+    "continueAsGuest": "Continuing without an account — you can still track this booking by email."
   },
   "account": {
     "dashboard": "Dashboard",

@@ -21,10 +21,10 @@ export default function Drawer({ open, onClose, side = 'left', title, children, 
             enter="ease-out duration-250" enterFrom={isLeft ? '-translate-x-full' : 'translate-x-full'} enterTo="translate-x-0"
             leave="ease-in duration-200" leaveFrom="translate-x-0" leaveTo={isLeft ? '-translate-x-full' : 'translate-x-full'}
           >
-            <DialogPanel className="flex h-full w-full flex-col bg-white shadow-2xl">
-              <div className="flex items-center justify-between border-b border-brand-800/10 px-5 py-4">
-                <span className="text-lg font-bold text-ink">{title}</span>
-                <button onClick={onClose} className="rounded-lg p-1 text-ink/50 hover:bg-brand-50 hover:text-ink">
+            <DialogPanel className="flex h-full w-full flex-col bg-white dark:bg-brand-800 shadow-2xl">
+              <div className="flex items-center justify-between border-b border-brand-800/10 dark:border-white/10 px-5 py-4">
+                <span className="text-lg font-bold text-ink dark:text-white">{title}</span>
+                <button onClick={onClose} className="rounded-lg p-1 text-ink/50 dark:text-white/50 hover:bg-brand-50 dark:bg-white/5 dark:hover:bg-white/10 hover:text-ink dark:text-white">
                   <XMarkIcon className="h-5 w-5" />
                 </button>
               </div>

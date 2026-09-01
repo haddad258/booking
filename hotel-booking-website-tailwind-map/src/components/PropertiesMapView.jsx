@@ -8,6 +8,7 @@ import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { resolveImageUrl } from '../lib/media';
+import ResponsiveImage from './ui/ResponsiveImage';
 
 const defaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -29,7 +30,6 @@ const activeIcon = L.icon({
 });
 
 const DEFAULT_CENTER = [36.8065, 10.1815]; // sensible fallback (Tunis) when nothing has coordinates yet
-const PLACEHOLDER = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=80&auto=format&fit=crop';
 
 /** Pans/zooms the map to fit every marker whenever the marker set changes. */
 function FitToMarkers({ positions }) {
@@ -62,7 +62,7 @@ export default function PropertiesMapView({ properties, type, activeId, onHover 
   const detailPath = (p) => (type === 'hotel' ? `/hotels/${p.id}` : `/chalets/${p.id}`);
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-2xl border border-brand-800/10">
+    <div className="relative h-full w-full overflow-hidden rounded-2xl border border-brand-800/10 dark:border-white/10">
       <MapContainer center={DEFAULT_CENTER} zoom={5} style={{ height: '100%', width: '100%' }} scrollWheelZoom={false}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -82,16 +82,17 @@ export default function PropertiesMapView({ properties, type, activeId, onHover 
           >
             <Popup minWidth={220}>
               <div className="w-full">
-                <img
-                  src={resolveImageUrl(p.images?.[0]?.url, PLACEHOLDER)}
+                <ResponsiveImage
+                  src={resolveImageUrl(p.cover_image_url || p.images?.[0]?.url)}
                   alt={p.name}
-                  className="mb-2 h-28 w-full rounded-lg object-cover"
+                  frameClassName="aspect-video"
+                  className="mb-2 rounded-lg"
                 />
-                <p className="font-display text-sm font-bold leading-tight text-ink">{p.name}</p>
-                <p className="mb-1.5 text-xs text-ink/55">{p.city}, {p.country}</p>
-                <p className="mb-2 font-display text-base font-bold text-brand-700">
+                <p className="font-display text-sm font-bold leading-tight text-ink dark:text-white">{p.name}</p>
+                <p className="mb-1.5 text-xs text-ink/55 dark:text-white/55">{p.city}, {p.country}</p>
+                <p className="mb-2 font-display text-base font-bold text-brand-700 dark:text-brand-200">
                   ${Number(p.base_price).toFixed(0)}
-                  <span className="ml-1 text-xs font-medium text-ink/50">{t('listing.perNight')}</span>
+                  <span className="ml-1 text-xs font-medium text-ink/50 dark:text-white/50">{t('listing.perNight')}</span>
                 </p>
                 <RouterLink
                   to={detailPath(p)}
@@ -106,8 +107,8 @@ export default function PropertiesMapView({ properties, type, activeId, onHover 
       </MapContainer>
 
       {withCoords.length === 0 && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-canvas/70">
-          <p className="rounded-lg bg-white px-4 py-2 text-sm text-ink/50 shadow">No property locations available yet</p>
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-canvas/85 dark:bg-brand-950/85">
+          <p className="rounded-lg bg-white dark:bg-brand-800 px-4 py-2 text-sm text-ink/50 dark:text-white/50 shadow">No property locations available yet</p>
         </div>
       )}
     </div>

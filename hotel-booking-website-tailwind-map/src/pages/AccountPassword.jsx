@@ -25,8 +25,8 @@ export default function AccountPassword() {
   };
 
   return (
-    <div className="rounded-2xl border border-brand-800/10 bg-white p-6">
-      <h2 className="font-display mb-4 text-lg font-semibold text-ink">Change password</h2>
+    <div className="rounded-2xl border border-brand-800/10 dark:border-white/10 bg-white dark:bg-brand-800 p-6">
+      <h2 className="font-display mb-4 text-lg font-semibold text-ink dark:text-white">Change password</h2>
       {success && <div className="mb-4 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">Password changed successfully</div>}
       {error && <div className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

@@ -15,30 +15,30 @@ export function ReviewList({ reviews, averageRating, reviewCount }) {
   return (
     <div>
       <div className="mb-6 flex items-center gap-3">
-        <span className="font-display text-4xl font-bold text-ink">{averageRating?.toFixed(1) || '—'}</span>
+        <span className="font-display text-4xl font-bold text-ink dark:text-white">{averageRating?.toFixed(1) || '—'}</span>
         <div>
           <Rating value={averageRating || 0} />
-          <p className="mt-0.5 text-xs text-ink/50">{reviewCount || 0} {t('detail.reviews').toLowerCase()}</p>
+          <p className="mt-0.5 text-xs text-ink/50 dark:text-white/50">{reviewCount || 0} {t('detail.reviews').toLowerCase()}</p>
         </div>
       </div>
 
       <div className="flex flex-col gap-5">
         {reviews.length === 0 && (
-          <p className="text-sm text-ink/50">No reviews yet — be the first to share your experience.</p>
+          <p className="text-sm text-ink/50 dark:text-white/50">No reviews yet — be the first to share your experience.</p>
         )}
         {reviews.map((r) => (
-          <div key={r.id} className="border-b border-brand-800/10 pb-5">
+          <div key={r.id} className="border-b border-brand-800/10 dark:border-white/10 pb-5">
             <div className="mb-1 flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 dark:bg-white/10 text-xs font-bold text-brand-700 dark:text-brand-200">
                 {r.first_name?.[0]}{r.last_name?.[0]}
               </span>
               <div>
-                <p className="text-sm font-bold text-ink">{r.first_name} {r.last_name}</p>
-                <p className="text-xs text-ink/45">{format(new Date(r.created_at), 'MMM d, yyyy')}</p>
+                <p className="text-sm font-bold text-ink dark:text-white">{r.first_name} {r.last_name}</p>
+                <p className="text-xs text-ink/45 dark:text-white/45">{format(new Date(r.created_at), 'MMM d, yyyy')}</p>
               </div>
             </div>
             <Rating value={Number(r.rating)} className="mb-1" />
-            {r.comment && <p className="text-sm text-ink/80">{r.comment}</p>}
+            {r.comment && <p className="text-sm text-ink/80 dark:text-white/80">{r.comment}</p>}
           </div>
         ))}
       </div>
@@ -71,8 +71,8 @@ export function ReviewForm({ bookableType, bookableId, onSubmitted }) {
   };
 
   return (
-    <div className="mt-6 rounded-2xl border border-brand-800/10 p-5">
-      <h4 className="mb-3 text-sm font-bold text-ink">{t('detail.writeReview')}</h4>
+    <div className="mt-6 rounded-2xl border border-brand-800/10 dark:border-white/10 p-5">
+      <h4 className="mb-3 text-sm font-bold text-ink dark:text-white">{t('detail.writeReview')}</h4>
       <Rating value={rating} onChange={setRating} size="h-6 w-6" className="mb-3" />
       <Textarea rows={3} placeholder="Share your experience…" value={comment} onChange={(e) => setComment(e.target.value)} className="mb-3" />
       <Button onClick={submit} disabled={loading}>Submit review</Button>

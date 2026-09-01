@@ -6,9 +6,9 @@ const { authenticate } = require('../middleware/auth.middleware');
 const { authLimiter } = require('../middleware/rateLimiter.middleware');
 const validate = require('../middleware/validate.middleware');
 const {
-  loginRules,
+  adminLoginRules,
   refreshTokenRules,
-  forgotPasswordRules,
+  adminForgotPasswordRules,
   resetPasswordRules,
 } = require('../validators/auth.validator');
 
@@ -22,11 +22,11 @@ const {
  *       200:
  *         description: Login successful
  */
-router.post('/login', authLimiter, loginRules, validate, authController.adminLogin);
+router.post('/login', authLimiter, adminLoginRules, validate, authController.adminLogin);
 
 router.post('/refresh-token', refreshTokenRules, validate, authController.refreshAdminToken);
 router.post('/logout', authenticate, authController.logout);
-router.post('/forgot-password', authLimiter, forgotPasswordRules, validate, authController.forgotPassword);
+router.post('/forgot-password', authLimiter, adminForgotPasswordRules, validate, authController.forgotPassword);
 router.post('/reset-password', authLimiter, resetPasswordRules, validate, authController.resetPassword);
 
 module.exports = router;
