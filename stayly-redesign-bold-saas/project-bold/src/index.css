@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+/* Enables the `dark:` variant driven by a `.dark` class on <html>, toggled
+   by ThemeContext (src/contexts/ThemeContext.jsx). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* "Electric indigo" palette — bold modern SaaS: vivid violet/indigo
+     primary, cyan accent, deep near-black surfaces for a dark-mode-native
+     feel even though light mode stays crisp and bright. */
+  --color-brand-50: #F1EEFE;
+  --color-brand-100: #E1DAFD;
+  --color-brand-200: #C3B5FB;
+  --color-brand-300: #A48FF7;
+  --color-brand-400: #8566F0;
+  --color-brand-500: #6D45E8;
+  --color-brand-600: #5A2FD4;
+  --color-brand-700: #4924A8;
+  --color-brand-800: #351B7A;
+  --color-brand-850: #281554;
+  --color-brand-900: #1A0F3D;
+  --color-brand-950: #0D0A20;
+
+  --color-gold-50: #E9FDFB;
+  --color-gold-100: #C9FBF4;
+  --color-gold-200: #93F5E9;
+  --color-gold-300: #52E7DA;
+  --color-gold-400: #22D3C4;
+  --color-gold-500: #14B8AA;
+  --color-gold-600: #0D9488;
+  --color-gold-700: #0B7A70;
+
+  --color-ink: #120B29;
+  --color-canvas: #F7F6FD;
+
+  --font-display: "Sora", "Inter", -apple-system, sans-serif;
+  --font-sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+    transition: background-color 320ms ease, color 320ms ease;
+  }
+  .dark body { @apply bg-brand-950 text-white; }
+  ::selection { @apply bg-gold-300 text-brand-950; }
+  .dark ::selection { @apply bg-brand-500/50 text-white; }
+  .font-display { letter-spacing: -0.02em; }
+
+  *:not(.hover-lift):not(.animate-fade-in-up):not(.animate-pop-in) {
+    transition-property: background-color, border-color, color, box-shadow, fill, stroke;
+    transition-duration: 220ms;
+    transition-timing-function: ease;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(247, 246, 253, 0.72);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+  }
+  .dark .glass {
+    background: rgba(13, 10, 32, 0.62);
+  }
+  .hover-lift { transition: transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms ease; }
+  .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 24px 48px -16px rgba(109,69,232,0.35); }
+  .dark .hover-lift:hover { box-shadow: 0 0 0 1px rgba(139,102,240,0.35), 0 24px 60px -16px rgba(109,69,232,0.55); }
+  .scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+
+  .elevated {
+    box-shadow: 0 1px 2px rgba(18,11,41,0.05), 0 12px 32px -16px rgba(18,11,41,0.18);
+  }
+  .dark .elevated {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 32px -16px rgba(0,0,0,0.7);
+  }
+
+  /* Signature gradient: used sparingly for CTAs, headline accents, and
+     hero glows so it reads as a brand mark rather than decoration spam. */
+  .brand-gradient { background-image: linear-gradient(120deg, #6D45E8 0%, #8566F0 45%, #22D3C4 100%); }
+  .text-gradient {
+    background-image: linear-gradient(120deg, #8566F0, #22D3C4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .glow-ring { box-shadow: 0 0 0 1px rgba(139,102,240,0.4), 0 0 40px -8px rgba(34,211,196,0.45); }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[0.7rem] font-bold uppercase tracking-[0.2em];
+  }
+  .eyebrow::before {
+    content: '';
+    @apply h-[3px] w-5 rounded-full;
+    background-image: linear-gradient(120deg, #6D45E8 0%, #8566F0 45%, #22D3C4 100%);
+  }
+
+  /* Decorative blurred gradient orb, used behind hero/CTA sections. Purely
+     visual, `pointer-events-none`, doesn't affect layout or a11y. */
+  .orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up { animation: fade-in-up 600ms cubic-bezier(.2,.8,.2,1) both; }
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-pop-in { animation: pop-in 320ms cubic-bezier(.2,.8,.2,1) both; }
+
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-3%, 4%); }
+}
+.animate-drift { animation: drift 14s ease-in-out infinite; }
+
+.dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(200deg) brightness(0.85) contrast(0.9) saturate(0.65);
+}
+.dark .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-tip {
+  background: var(--color-brand-900);
+  color: #fff;
+}
+.dark .leaflet-control-zoom a {
+  background: var(--color-brand-900);
+  color: #fff;
+  border-color: rgba(255,255,255,0.15) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}

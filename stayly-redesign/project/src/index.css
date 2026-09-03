@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+/* Enables the `dark:` variant driven by a `.dark` class on <html>, toggled
+   by ThemeContext (src/contexts/ThemeContext.jsx) rather than only
+   `prefers-color-scheme` — lets users override the OS setting, and the
+   choice persists across visits. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* "Pine & clay" palette — a quiet-luxury editorial travel look. The
+     800/900/950 pine shades already read as a natural dark-mode surface,
+     so dark mode reuses them directly rather than inventing a parallel
+     palette — one coherent design system, two luminance modes. */
+  --color-brand-50: #EEF3EC;
+  --color-brand-100: #D9E5D4;
+  --color-brand-200: #B4CCAA;
+  --color-brand-300: #8CAE7E;
+  --color-brand-400: #668F58;
+  --color-brand-500: #4A7040;
+  --color-brand-600: #375530;
+  --color-brand-700: #2A4226;
+  --color-brand-800: #1E301C;
+  --color-brand-850: #182719;
+  --color-brand-900: #121E13;
+  --color-brand-950: #0A130B;
+
+  --color-gold-50: #FBF1E9;
+  --color-gold-100: #F4DBC4;
+  --color-gold-200: #E8B98C;
+  --color-gold-300: #DB9863;
+  --color-gold-400: #C87B41;
+  --color-gold-500: #AD612C;
+  --color-gold-600: #8B4C22;
+  --color-gold-700: #6C3B1B;
+
+  --color-ink: #211C15;
+  --color-canvas: #F7F3EB;
+
+  --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
+  --font-sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+    transition: background-color 320ms ease, color 320ms ease;
+  }
+  .dark body { @apply bg-brand-950 text-white; }
+  ::selection { @apply bg-gold-200 text-ink; }
+  .dark ::selection { @apply bg-gold-500/40 text-white; }
+  .font-display { font-optical-sizing: auto; letter-spacing: -0.01em; }
+
+  /* Smooth theme switch: fade background/border/text color changes across
+     the whole app instead of an abrupt flash when toggling. */
+  *:not(.hover-lift):not(.animate-fade-in-up):not(.animate-pop-in) {
+    transition-property: background-color, border-color, color, box-shadow, fill, stroke;
+    transition-duration: 220ms;
+    transition-timing-function: ease;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(247, 243, 235, 0.82);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+  .dark .glass {
+    background: rgba(10, 19, 11, 0.78);
+  }
+  .hover-lift { transition: transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms ease; }
+  .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 24px 48px -18px rgba(33,28,21,0.25); }
+  .dark .hover-lift:hover { box-shadow: 0 24px 48px -18px rgba(0,0,0,0.6); }
+  .scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+
+  .elevated {
+    box-shadow: 0 1px 2px rgba(33,28,21,0.04), 0 10px 28px -14px rgba(33,28,21,0.14);
+  }
+  .dark .elevated {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.55);
+  }
+
+  /* Editorial "eyebrow" label used above headings throughout the app. */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.22em];
+  }
+  .eyebrow::before {
+    content: '';
+    @apply h-px w-6 bg-current opacity-50;
+  }
+
+  /* Subtle warm paper grain used behind hero/dark sections to keep flat
+     color fields from feeling sterile. Purely decorative, no layout impact. */
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up { animation: fade-in-up 600ms cubic-bezier(.2,.8,.2,1) both; }
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-pop-in { animation: pop-in 320ms cubic-bezier(.2,.8,.2,1) both; }
+
+/* Leaflet has no native dark theme; inverting just the tile layer (not
+   markers/popups/controls) is the standard technique for a dark-friendly
+   map without switching tile providers or adding a dependency. */
+.dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(90deg) brightness(0.9) contrast(0.88) saturate(0.7);
+}
+.dark .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-tip {
+  background: var(--color-brand-800);
+  color: #fff;
+}
+.dark .leaflet-control-zoom a {
+  background: var(--color-brand-800);
+  color: #fff;
+  border-color: rgba(255,255,255,0.15) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}

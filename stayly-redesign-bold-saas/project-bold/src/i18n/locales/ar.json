@@ -1,0 +1,122 @@
+{
+  "app": { "name": "ستايلي" },
+  "nav": {
+    "hotels": "الفنادق",
+    "chalets": "الشاليهات",
+    "about": "من نحن",
+    "blog": "المدونة",
+    "contact": "تواصل معنا",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "account": "حسابي",
+    "myBookings": "حجوزاتي",
+    "favorites": "المفضلة",
+    "logout": "تسجيل الخروج"
+  },
+  "home": {
+    "heroTitle": "ابحث عن إقامتك القادمة",
+    "heroSubtitle": "فنادق وشاليهات جبلية مختارة بعناية، احجزها خلال دقائق.",
+    "searchDestination": "إلى أين؟",
+    "searchCheckIn": "تاريخ الوصول",
+    "searchCheckOut": "تاريخ المغادرة",
+    "searchGuests": "الضيوف",
+    "searchCta": "بحث",
+    "featuredHotels": "فنادق مميزة",
+    "featuredChalets": "شاليهات مميزة",
+    "popularDestinations": "وجهات شائعة",
+    "kickerStays": "إقامات مختارة",
+    "kickerDestinations": "إلى أين بعد؟",
+    "kickerRetreats": "ملاذات جبلية",
+    "kickerReviews": "يحبها المسافرون",
+    "testimonials": "آراء ضيوفنا",
+    "mostRequested": "الأكثر طلبًا",
+    "mostRequestedSubtitle": "إقامات مختارة تعرضها فريقنا حاليًا.",
+    "newsletterTitle": "احصل على أفضل العروض عبر بريدك الإلكتروني",
+    "newsletterCta": "اشتراك"
+  },
+  "listing": {
+    "filters": "الفلاتر",
+    "priceRange": "نطاق السعر",
+    "rating": "التقييم",
+    "amenities": "المرافق",
+    "guests": "الضيوف",
+    "noResults": "لا توجد نتائج مطابقة لبحثك بعد.",
+    "perNight": "/ ليلة",
+    "viewDetails": "عرض التفاصيل"
+  },
+  "detail": {
+    "amenities": "المرافق",
+    "reviews": "التقييمات",
+    "location": "الموقع",
+    "similar": "قد يعجبك أيضًا",
+    "bookNow": "احجز الآن",
+    "selectRoom": "اختر غرفة",
+    "writeReview": "أضف تقييمًا"
+  },
+  "booking": {
+    "step1": "بيانات الضيف",
+    "contactStep": "بياناتك",
+    "step2": "الدفع",
+    "step3": "التأكيد",
+    "checkIn": "الوصول",
+    "checkOut": "المغادرة",
+    "adults": "بالغون",
+    "children": "أطفال",
+    "total": "الإجمالي",
+    "confirmBooking": "تأكيد الحجز",
+    "bookingConfirmed": "تم تأكيد الحجز!",
+    "bookingNumber": "رقم الحجز"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "register": "أنشئ حسابك",
+    "email": "البريد الإلكتروني",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "phone": "الهاتف",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "noAccount": "ليس لديك حساب؟",
+    "haveAccount": "لديك حساب بالفعل؟",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "createAccount": "إنشاء حساب",
+    "createAccountHint": "سننشئ لك حساب دخول لإدارة هذا الحجز والحجوزات القادمة.",
+    "generatedUsername": "اسم المستخدم الخاص بك",
+    "generatedUsernameHint": "احتفظ به — ستحتاجه لتسجيل الدخول لاحقًا.",
+    "continueAsGuest": "أنت تكمل بدون حساب — يمكنك متابعة هذا الحجز عبر البريد الإلكتروني."
+  },
+  "account": {
+    "dashboard": "لوحة التحكم",
+    "bookings": "الحجوزات",
+    "favorites": "المفضلة",
+    "profile": "الملف الشخصي",
+    "password": "كلمة المرور",
+    "changePassword": "تغيير كلمة المرور"
+  },
+  "contact": {
+    "title": "تواصل معنا",
+    "subtitle": "لديك أسئلة حول إقامة أو حجز؟ نحن هنا للمساعدة.",
+    "name": "اسمك",
+    "email": "البريد الإلكتروني",
+    "message": "الرسالة",
+    "send": "إرسال الرسالة",
+    "sent": "شكرًا لك — سنرد عليك قريبًا."
+  },
+  "footer": {
+    "company": "الشركة",
+    "support": "الدعم",
+    "legal": "قانوني",
+    "privacy": "سياسة الخصوصية",
+    "terms": "شروط الخدمة",
+    "cookies": "ملفات تعريف الارتباط",
+    "rights": "جميع الحقوق محفوظة."
+  },
+  "common": {
+    "loading": "جارٍ التحميل…",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "readMore": "اقرأ المزيد"
+  }
+}
