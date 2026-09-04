@@ -61,11 +61,11 @@ export default function Header() {
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-brand-800">
             <MapIcon className="h-5 w-5 text-gold-300" />
           </span>
-          {/* <img
+          <img
             src={logo}
             alt="Logo"
             className="h-9 w-9 object-contain"
-          /> */}
+          />
           <span className="font-display text-2xl font-semibold text-ink dark:text-white">{t('app.name')}</span>
         </RouterLink>
 
