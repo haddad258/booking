@@ -13,6 +13,7 @@ import EntityDialog from '../components/EntityDialog';
 import ImageUploader from '../components/ImageUploader';
 import LocationMapPicker from '../components/LocationMapPicker';
 import AmenitiesManager from '../components/AmenitiesManager';
+import DescriptionsManager from '../components/DescriptionsManager';
 import useToast from '../hooks/useToast';
 import hotelService from '../services/hotel.service';
 import amenityService from '../services/amenity.service';
@@ -54,6 +55,21 @@ export default function HotelDetail() {
 
   const handleSaveAmenities = async (amenityIds) => {
     await hotelService.update(id, { amenityIds });
+    await load();
+  };
+
+  const handleSaveDescription = async (payload) => {
+    await hotelService.saveDescription(id, payload);
+    await load();
+  };
+
+  const handleSetDefaultDescription = async (descriptionId) => {
+    await hotelService.setDefaultDescription(id, descriptionId);
+    await load();
+  };
+
+  const handleDeleteDescription = async (descriptionId) => {
+    await hotelService.deleteDescription(id, descriptionId);
     await load();
   };
 
@@ -185,6 +201,15 @@ export default function HotelDetail() {
             />
           </Paper>
 
+          <Paper elevation={0} sx={{ p: 2.5, mb: 2 }}>
+            <DescriptionsManager
+              descriptions={hotel.descriptions}
+              onSave={handleSaveDescription}
+              onSetDefault={handleSetDefaultDescription}
+              onDelete={handleDeleteDescription}
+            />
+          </Paper>
+
           <Paper elevation={0} sx={{ p: 2.5 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
               <Typography variant="subtitle1" fontWeight={700}>Rooms</Typography>
@@ -204,7 +229,7 @@ export default function HotelDetail() {
                       </Typography>
                     </Box>
                     <Stack direction="row" alignItems="center" spacing={1}>
-                      <Typography className="mono" fontWeight={700}>${Number(room.price).toFixed(2)}</Typography>
+                      <Typography className="mono" fontWeight={700}>{Number(room.price).toFixed(2)} KWD</Typography>
                       <IconButton size="small" onClick={() => openEditRoom(room)}>
                         <EditIcon fontSize="small" />
                       </IconButton>

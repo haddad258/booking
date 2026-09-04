@@ -9,6 +9,8 @@ const createHotelRules = [
   body('latitude').optional().isFloat({ min: -90, max: 90 }),
   body('longitude').optional().isFloat({ min: -180, max: 180 }),
   body('starRating').optional().isInt({ min: 0, max: 5 }),
+  body('rating').optional().isFloat({ min: 0, max: 5 }).withMessage('rating must be between 0 and 5'),
+  body('ratedPrice').optional().isFloat({ min: 0 }).withMessage('ratedPrice must be a positive number'),
   body('basePrice').isFloat({ min: 0 }).withMessage('Base price must be a positive number'),
   body('currency').optional().isLength({ min: 3, max: 3 }),
   body('amenityIds').optional().isArray(),
@@ -20,6 +22,8 @@ const updateHotelRules = [
   param('id').isInt().withMessage('Invalid hotel id'),
   body('name').optional().trim().notEmpty(),
   body('basePrice').optional().isFloat({ min: 0 }),
+  body('rating').optional().isFloat({ min: 0, max: 5 }).withMessage('rating must be between 0 and 5'),
+  body('ratedPrice').optional().isFloat({ min: 0 }).withMessage('ratedPrice must be a positive number'),
   body('status').optional().isIn(['draft', 'published', 'archived']),
   body('important').optional().isBoolean(),
 ];
@@ -47,10 +51,25 @@ const createRoomRules = [
   body('quantity').optional().isInt({ min: 1 }),
 ];
 
+// Multilingual description management (Requirement #7).
+const upsertDescriptionRules = [
+  param('id').isInt().withMessage('Invalid hotel id'),
+  body('language').trim().notEmpty().isLength({ min: 2, max: 10 }).withMessage('language is required (e.g. "en", "fr", "ar")'),
+  body('description').trim().notEmpty().withMessage('description is required'),
+  body('isDefault').optional().isBoolean(),
+];
+
+const descriptionIdParamRule = [
+  param('id').isInt().withMessage('Invalid hotel id'),
+  param('descriptionId').isInt().withMessage('Invalid description id'),
+];
+
 module.exports = {
   createHotelRules,
   updateHotelRules,
   idParamRule,
   listHotelsRules,
   createRoomRules,
+  upsertDescriptionRules,
+  descriptionIdParamRule,
 };

@@ -23,8 +23,10 @@ async function createHotel(payload, adminId) {
       latitude: payload.latitude || null,
       longitude: payload.longitude || null,
       star_rating: payload.starRating || null,
+      rating: payload.rating != null ? payload.rating : null,
+      rated_price: payload.ratedPrice != null ? payload.ratedPrice : null,
       base_price: payload.basePrice,
-      currency: payload.currency || 'USD',
+      currency: payload.currency || 'KWD',
       services: payload.services ? JSON.stringify(payload.services) : null,
       status: payload.status || 'draft',
       important: payload.important === true,
@@ -74,16 +76,17 @@ async function getHotelById(id) {
   const hotel = await db('hotels').where({ id }).first();
   if (!hotel) throw ApiError.notFound('Hotel not found');
 
-  const [images, amenities, rooms] = await Promise.all([
+  const [images, amenities, rooms, descriptions] = await Promise.all([
     db('hotel_images').where({ hotel_id: id }).orderBy('sort_order'),
     db('hotel_amenities as ha')
       .join('amenities as a', 'a.id', 'ha.amenity_id')
       .where('ha.hotel_id', id)
       .select('a.*'),
     db('rooms').where({ hotel_id: id }),
+    db('hotel_descriptions').where({ hotel_id: id }).select('id', 'language', 'description', 'is_default').orderBy('language'),
   ]);
 
-  return { ...hotel, images, amenities, rooms };
+  return { ...hotel, images, amenities, rooms, descriptions };
 }
 
 async function updateHotel(id, payload) {
@@ -100,6 +103,8 @@ async function updateHotel(id, payload) {
     latitude: 'latitude',
     longitude: 'longitude',
     starRating: 'star_rating',
+    rating: 'rating',
+    ratedPrice: 'rated_price',
     basePrice: 'base_price',
     currency: 'currency',
     status: 'status',
@@ -286,6 +291,66 @@ async function setAvailability(hotelId, roomId, entries) {
   return db('hotel_availability').where({ room_id: roomId }).orderBy('date');
 }
 
+/**
+ * Multilingual description management (Requirement #7 — admin can add,
+ * edit, and manage a default across languages for each property).
+ */
+async function listDescriptions(hotelId) {
+  return db('hotel_descriptions').where({ hotel_id: hotelId }).orderBy('language');
+}
+
+/** Creates or updates the description for a given language (one row per language, enforced by a unique constraint). */
+async function upsertDescription(hotelId, { language, description, isDefault }) {
+  const hotel = await db('hotels').where({ id: hotelId }).first();
+  if (!hotel) throw ApiError.notFound('Hotel not found');
+  if (!language || !description) throw ApiError.badRequest('language and description are required');
+
+  return db.transaction(async (trx) => {
+    const existingCount = await trx('hotel_descriptions').where({ hotel_id: hotelId }).count('* as c').first();
+    // The very first description for a property is automatically the
+    // default — there's always exactly one sensible fallback once any
+    // description exists, without requiring an extra admin step.
+    const shouldBeDefault = isDefault === true || Number(existingCount.c) === 0;
+
+    if (shouldBeDefault) {
+      await trx('hotel_descriptions').where({ hotel_id: hotelId }).update({ is_default: false });
+    }
+
+    const [row] = await trx('hotel_descriptions')
+      .insert({ hotel_id: hotelId, language, description, is_default: shouldBeDefault })
+      .onConflict(['hotel_id', 'language'])
+      .merge(['description', 'is_default', 'updated_at'])
+      .returning('*');
+    return row;
+  });
+}
+
+async function setDefaultDescription(hotelId, descriptionId) {
+  const row = await db('hotel_descriptions').where({ id: descriptionId, hotel_id: hotelId }).first();
+  if (!row) throw ApiError.notFound('Description not found');
+
+  await db.transaction(async (trx) => {
+    await trx('hotel_descriptions').where({ hotel_id: hotelId }).update({ is_default: false });
+    await trx('hotel_descriptions').where({ id: descriptionId }).update({ is_default: true });
+  });
+  return listDescriptions(hotelId);
+}
+
+async function deleteDescription(hotelId, descriptionId) {
+  const row = await db('hotel_descriptions').where({ id: descriptionId, hotel_id: hotelId }).first();
+  if (!row) throw ApiError.notFound('Description not found');
+
+  await db('hotel_descriptions').where({ id: descriptionId }).del();
+
+  // If the default was just deleted and others remain, promote the next
+  // one so there's always a fallback as long as any description exists.
+  if (row.is_default) {
+    const next = await db('hotel_descriptions').where({ hotel_id: hotelId }).orderBy('language').first();
+    if (next) await db('hotel_descriptions').where({ id: next.id }).update({ is_default: true });
+  }
+  return listDescriptions(hotelId);
+}
+
 module.exports = {
   createHotel,
   listHotels,
@@ -301,4 +366,8 @@ module.exports = {
   deleteRoom,
   checkRoomAvailability,
   setAvailability,
+  listDescriptions,
+  upsertDescription,
+  setDefaultDescription,
+  deleteDescription,
 };

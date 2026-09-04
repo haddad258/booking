@@ -9,6 +9,7 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { resolveImageUrl } from '../lib/media';
 import ResponsiveImage from './ui/ResponsiveImage';
+import { formatPrice } from '../lib/currency';
 
 const defaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -91,7 +92,7 @@ export default function PropertiesMapView({ properties, type, activeId, onHover 
                 <p className="font-display text-sm font-bold leading-tight text-ink dark:text-white">{p.name}</p>
                 <p className="mb-1.5 text-xs text-ink/55 dark:text-white/55">{p.city}, {p.country}</p>
                 <p className="mb-2 font-display text-base font-bold text-brand-700 dark:text-brand-200">
-                  ${Number(p.base_price).toFixed(0)}
+                  {formatPrice(p.base_price)}
                   <span className="ml-1 text-xs font-medium text-ink/50 dark:text-white/50">{t('listing.perNight')}</span>
                 </p>
                 <RouterLink

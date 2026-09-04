@@ -60,6 +60,27 @@ const setAvailability = catchAsync(async (req, res) => {
   ApiResponse.send(res, { message: 'Availability updated', data: availability });
 });
 
+// --- Multilingual descriptions (Requirement #7) ---
+const listDescriptions = catchAsync(async (req, res) => {
+  const descriptions = await chaletService.listDescriptions(req.params.id);
+  ApiResponse.send(res, { data: descriptions });
+});
+
+const upsertDescription = catchAsync(async (req, res) => {
+  const description = await chaletService.upsertDescription(req.params.id, req.body);
+  ApiResponse.send(res, { statusCode: 201, message: 'Description saved', data: description });
+});
+
+const setDefaultDescription = catchAsync(async (req, res) => {
+  const descriptions = await chaletService.setDefaultDescription(req.params.id, req.params.descriptionId);
+  ApiResponse.send(res, { message: 'Default description updated', data: descriptions });
+});
+
+const deleteDescription = catchAsync(async (req, res) => {
+  const descriptions = await chaletService.deleteDescription(req.params.id, req.params.descriptionId);
+  ApiResponse.send(res, { message: 'Description deleted', data: descriptions });
+});
+
 module.exports = {
   list,
   getById,
@@ -72,4 +93,8 @@ module.exports = {
   setCoverImage,
   checkAvailability,
   setAvailability,
+  listDescriptions,
+  upsertDescription,
+  setDefaultDescription,
+  deleteDescription,
 };

@@ -22,7 +22,12 @@ async function priceHotelBooking({ roomId, checkIn, checkOut }) {
   const nights = nightsBetween(checkIn, checkOut);
   if (nights < 1) throw ApiError.badRequest('checkOut must be after checkIn');
 
-  return { totalPrice: Number(room.price) * nights, currency: 'USD', hotelId: room.hotel_id };
+  // Fix: this previously hardcoded 'USD' regardless of the hotel's own
+  // currency column (chalet bookings already correctly used
+  // chalet.currency) — inconsistent, and would have quoted the wrong
+  // currency for KWD-priced hotels.
+  const hotel = await db('hotels').where({ id: room.hotel_id }).first();
+  return { totalPrice: Number(room.price) * nights, currency: hotel?.currency || 'KWD', hotelId: room.hotel_id };
 }
 
 async function priceChaletBooking({ chaletId, checkIn, checkOut }) {

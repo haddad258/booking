@@ -42,6 +42,8 @@
     "guests": "Voyageurs",
     "noResults": "Aucun résultat pour cette recherche.",
     "perNight": "/ nuit",
+    "startingFrom": "À partir de",
+    "ratedPrice": "Prix coté",
     "viewDetails": "Voir les détails"
   },
   "detail": {

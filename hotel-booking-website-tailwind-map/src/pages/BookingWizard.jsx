@@ -7,6 +7,7 @@ import { Input, Select } from '../components/ui/Input';
 import bookingService from '../services/booking.service';
 import { apiErrorMessage } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import { formatPrice } from '../lib/currency';
 
 /**
  * Booking no longer requires being logged in (see the guest-checkout
@@ -150,8 +151,8 @@ export default function BookingWizard() {
 
             {nights > 0 && (
               <div className="mt-4 rounded-xl bg-brand-50 dark:bg-white/5 p-4">
-                <p className="text-sm text-ink/70 dark:text-white/70">${pricePerNight} × {nights} nights</p>
-                <p className="font-display text-xl font-bold text-ink dark:text-white">{t('booking.total')}: ${total.toFixed(2)}</p>
+                <p className="text-sm text-ink/70 dark:text-white/70">{formatPrice(pricePerNight)} × {nights} nights</p>
+                <p className="font-display text-xl font-bold text-ink dark:text-white">{t('booking.total')}: {formatPrice(total)}</p>
               </div>
             )}
 
@@ -207,7 +208,7 @@ export default function BookingWizard() {
               <p>Check-in: {checkIn}</p>
               <p>Check-out: {checkOut}</p>
               <p>Guests: {adults} adults, {children} children</p>
-              <p className="font-display pt-1 text-lg font-bold text-ink dark:text-white">{t('booking.total')}: ${total.toFixed(2)}</p>
+              <p className="font-display pt-1 text-lg font-bold text-ink dark:text-white">{t('booking.total')}: {formatPrice(total)}</p>
             </div>
             <Button fullWidth size="lg" onClick={handleConfirm} disabled={loading}>{t('booking.confirmBooking')}</Button>
           </div>

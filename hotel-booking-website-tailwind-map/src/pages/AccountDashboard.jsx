@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { format } from 'date-fns';
 import bookingService from '../services/booking.service';
 import Spinner from '../components/ui/Spinner';
+import { formatPrice } from '../lib/currency';
 
 export default function AccountDashboard() {
   const [bookings, setBookings] = useState([]);
@@ -29,7 +30,7 @@ export default function AccountDashboard() {
             <div key={b.id} className="rounded-xl border border-brand-800/10 dark:border-white/10 p-4">
               <p className="font-mono font-bold text-ink dark:text-white">{b.booking_number}</p>
               <p className="text-sm text-ink/60 dark:text-white/60">
-                {format(new Date(b.check_in), 'MMM d')} → {format(new Date(b.check_out), 'MMM d, yyyy')} · ${Number(b.total_price).toFixed(2)}
+                {format(new Date(b.check_in), 'MMM d')} → {format(new Date(b.check_out), 'MMM d, yyyy')} · {formatPrice(b.total_price)}
               </p>
             </div>
           ))}

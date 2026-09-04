@@ -47,4 +47,38 @@ async function setAvailability(hotelId, roomId, entries) {
   return data.data;
 }
 
-export default { ...base, uploadImages, removeImage, reorderImages, setCoverImage, addRoom, updateRoom, deleteRoom, setAvailability };
+async function listDescriptions(hotelId) {
+  const { data } = await api.get(`/hotels/${hotelId}/descriptions`);
+  return data.data;
+}
+
+async function saveDescription(hotelId, payload) {
+  const { data } = await api.post(`/hotels/${hotelId}/descriptions`, payload);
+  return data.data;
+}
+
+async function setDefaultDescription(hotelId, descriptionId) {
+  const { data } = await api.put(`/hotels/${hotelId}/descriptions/${descriptionId}/default`);
+  return data.data;
+}
+
+async function deleteDescription(hotelId, descriptionId) {
+  const { data } = await api.delete(`/hotels/${hotelId}/descriptions/${descriptionId}`);
+  return data.data;
+}
+
+export default {
+  ...base,
+  uploadImages,
+  removeImage,
+  reorderImages,
+  setCoverImage,
+  addRoom,
+  updateRoom,
+  deleteRoom,
+  setAvailability,
+  listDescriptions,
+  saveDescription,
+  setDefaultDescription,
+  deleteDescription,
+};

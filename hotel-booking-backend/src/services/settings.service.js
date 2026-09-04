@@ -4,7 +4,7 @@ const DEFAULTS = {
   website: { siteName: 'Hotel Booking Platform', logoUrl: null, favicon: null, contactEmail: null, contactPhone: null },
   smtp: { host: null, port: 587, secure: false, user: null, from: null },
   languages: { default: 'en', enabled: ['en', 'fr', 'ar'] },
-  currency: { default: 'USD', enabled: ['USD', 'EUR'] },
+  currency: { default: 'KWD', enabled: ['KWD', 'USD', 'EUR'] },
   taxes: { rate: 0, inclusive: false },
   seo: { metaTitle: null, metaDescription: null, ogImage: null },
 };

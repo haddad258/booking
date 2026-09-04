@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MapPinIcon } from '@heroicons/react/24/outline';
+import { StarIcon } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
 import { ReviewList, ReviewForm } from '../components/Review';
 import PropertyCard from '../components/PropertyCard';
@@ -12,11 +13,13 @@ import Spinner from '../components/ui/Spinner';
 import chaletService from '../services/chalet.service';
 import reviewService from '../services/review.service';
 import useFavorites from '../hooks/useFavorites';
+import { getLocalizedDescription } from '../lib/descriptions';
+import { formatPrice } from '../lib/currency';
 
 export default function ChaletDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isFavorite, toggle } = useFavorites();
   const [chalet, setChalet] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -40,6 +43,8 @@ export default function ChaletDetail() {
     return <div className="flex justify-center py-24"><Spinner className="h-8 w-8" /></div>;
   }
 
+  const localizedDescription = getLocalizedDescription(chalet, i18n.language);
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
@@ -48,23 +53,36 @@ export default function ChaletDetail() {
           <p className="mt-1 flex items-center gap-1 text-sm text-ink/55 dark:text-white/55">
             <MapPinIcon className="h-4 w-4" /> {chalet.address}, {chalet.city}, {chalet.country}
           </p>
+          <p className="mt-2 flex flex-wrap items-baseline gap-2">
+            <span className="font-display text-lg font-bold text-brand-700 dark:text-brand-200">
+              {t('listing.startingFrom')} {formatPrice(chalet.base_price)}
+            </span>
+            {chalet.rated_price != null && (
+              <span className="text-sm text-ink/50 dark:text-white/50">· {t('listing.ratedPrice')}: {formatPrice(chalet.rated_price)}</span>
+            )}
+          </p>
         </div>
         <Button variant="outline" onClick={() => toggle(chalet, 'chalet')}>
           {isFavorite('chalet', chalet.id) ? 'Saved' : 'Save'}
         </Button>
       </div>
 
-      <div className="mb-6 flex flex-wrap gap-2">
+      <div className="mb-6 flex flex-wrap items-center gap-2">
         <Badge color="gold">{chalet.capacity} guests</Badge>
         <Badge color="gold">{chalet.bedrooms} bedrooms</Badge>
         <Badge color="gold">{chalet.bathrooms} bathrooms</Badge>
+        {chalet.rating != null && (
+          <span className="flex items-center gap-1 rounded-full bg-brand-50 dark:bg-white/5 px-3 py-1 text-xs font-bold text-ink dark:text-white">
+            <StarIcon className="h-3.5 w-3.5 text-gold-500" /> {Number(chalet.rating).toFixed(1)}
+          </span>
+        )}
       </div>
 
       <PropertyGallery images={chalet.images} name={chalet.name} />
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          {chalet.description && <p className="mb-6 text-ink/75 dark:text-white/75">{chalet.description}</p>}
+          {localizedDescription && <p className="mb-6 text-ink/75 dark:text-white/75">{localizedDescription}</p>}
 
           <h2 className="font-display mb-3 text-xl font-semibold text-ink dark:text-white">{t('detail.amenities')}</h2>
           <div className="mb-8 flex flex-wrap gap-2">
@@ -95,7 +113,7 @@ export default function ChaletDetail() {
         <div>
           <div className="sticky top-24 rounded-2xl border border-brand-800/10 dark:border-white/10 bg-white dark:bg-brand-800 p-5">
             <p className="font-display text-2xl font-bold text-brand-700 dark:text-brand-200">
-              ${Number(chalet.base_price).toFixed(0)} <span className="font-sans text-sm font-medium text-ink/50 dark:text-white/50">{t('listing.perNight')}</span>
+              {formatPrice(chalet.base_price)} <span className="font-sans text-sm font-medium text-ink/50 dark:text-white/50">{t('listing.perNight')}</span>
             </p>
             <Button
               fullWidth

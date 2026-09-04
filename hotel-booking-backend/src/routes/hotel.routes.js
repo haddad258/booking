@@ -12,6 +12,8 @@ const {
   idParamRule,
   listHotelsRules,
   createRoomRules,
+  upsertDescriptionRules,
+  descriptionIdParamRule,
 } = require('../validators/hotel.validator');
 
 // --- Public routes ---
@@ -45,5 +47,13 @@ router.patch('/:id/rooms/:roomId', requirePermission('hotels.update'), hotelCont
 router.delete('/:id/rooms/:roomId', requirePermission('hotels.update'), hotelController.deleteRoom);
 
 router.put('/:id/rooms/:roomId/availability', requirePermission('hotels.update'), hotelController.setAvailability);
+
+// --- Multilingual descriptions (Requirement #7 — admin-managed; publicly
+// readable via GET /:id, which already includes the full `descriptions`
+// array in its response, see hotel.service#getHotelById) ---
+router.get('/:id/descriptions', requirePermission('hotels.update'), idParamRule, validate, hotelController.listDescriptions);
+router.post('/:id/descriptions', requirePermission('hotels.update'), upsertDescriptionRules, validate, hotelController.upsertDescription);
+router.put('/:id/descriptions/:descriptionId/default', requirePermission('hotels.update'), descriptionIdParamRule, validate, hotelController.setDefaultDescription);
+router.delete('/:id/descriptions/:descriptionId', requirePermission('hotels.update'), descriptionIdParamRule, validate, hotelController.deleteDescription);
 
 module.exports = router;

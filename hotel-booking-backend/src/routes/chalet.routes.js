@@ -11,6 +11,8 @@ const {
   updateChaletRules,
   idParamRule,
   listChaletsRules,
+  upsertDescriptionRules,
+  descriptionIdParamRule,
 } = require('../validators/chalet.validator');
 
 // --- Public routes ---
@@ -40,5 +42,11 @@ router.put('/:id/images/reorder', requirePermission('chalets.update'), chaletCon
 router.put('/:id/images/:imageId/cover', requirePermission('chalets.update'), chaletController.setCoverImage);
 
 router.put('/:id/availability', requirePermission('chalets.update'), chaletController.setAvailability);
+
+// --- Multilingual descriptions (Requirement #7) ---
+router.get('/:id/descriptions', requirePermission('chalets.update'), idParamRule, validate, chaletController.listDescriptions);
+router.post('/:id/descriptions', requirePermission('chalets.update'), upsertDescriptionRules, validate, chaletController.upsertDescription);
+router.put('/:id/descriptions/:descriptionId/default', requirePermission('chalets.update'), descriptionIdParamRule, validate, chaletController.setDefaultDescription);
+router.delete('/:id/descriptions/:descriptionId', requirePermission('chalets.update'), descriptionIdParamRule, validate, chaletController.deleteDescription);
 
 module.exports = router;

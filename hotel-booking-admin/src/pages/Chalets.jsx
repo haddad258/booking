@@ -36,7 +36,7 @@ export default function Chalets() {
 
   const openCreate = () => {
     setEditing(null);
-    reset({ name: '', address: '', city: '', country: '', capacity: 2, bedrooms: 1, bathrooms: 1, basePrice: '', status: 'draft', amenityIds: [], important: false });
+    reset({ name: '', address: '', city: '', country: '', capacity: 2, bedrooms: 1, bathrooms: 1, basePrice: '', rating: '', ratedPrice: '', status: 'draft', amenityIds: [], important: false });
     setDialogOpen(true);
   };
 
@@ -54,6 +54,8 @@ export default function Chalets() {
       bedrooms: full.bedrooms,
       bathrooms: full.bathrooms,
       basePrice: full.base_price,
+      rating: full.rating || '',
+      ratedPrice: full.rated_price || '',
       status: full.status,
       description: full.description || '',
       amenityIds: (full.amenities || []).map((a) => a.id),
@@ -71,6 +73,8 @@ export default function Chalets() {
         bedrooms: Number(values.bedrooms),
         bathrooms: Number(values.bathrooms),
         basePrice: Number(values.basePrice),
+        rating: values.rating !== '' && values.rating != null ? Number(values.rating) : undefined,
+        ratedPrice: values.ratedPrice !== '' && values.ratedPrice != null ? Number(values.ratedPrice) : undefined,
         amenityIds: values.amenityIds || [],
       };
       if (editing) {
@@ -117,7 +121,7 @@ export default function Chalets() {
     },
     { key: 'city', label: 'City', render: (r) => `${r.city}, ${r.country}` },
     { key: 'capacity', label: 'Capacity', render: (r) => `${r.capacity} guests · ${r.bedrooms} bed` },
-    { key: 'base_price', label: 'Base price', render: (r) => <span className="mono">${Number(r.base_price).toFixed(2)}</span> },
+    { key: 'base_price', label: 'Base price', render: (r) => <span className="mono">{Number(r.base_price).toFixed(2)} KWD</span> },
     { key: 'status', label: 'Status', render: (r) => <StatusChip status={r.status} /> },
     {
       key: 'actions',
@@ -187,7 +191,27 @@ export default function Chalets() {
             <TextField fullWidth type="number" label="Bathrooms" {...register('bathrooms')} />
           </Grid>
           <Grid item xs={3}>
-            <TextField fullWidth type="number" label="Base price / night" {...register('basePrice', { required: true })} />
+            <TextField fullWidth type="number" label="Base price / night (KWD)" {...register('basePrice', { required: true })} />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              fullWidth
+              type="number"
+              label="Rated price (KWD)"
+              helperText="Optional, e.g. weekend rate incl. fees"
+              inputProps={{ min: 0, step: '0.01' }}
+              {...register('ratedPrice')}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              fullWidth
+              type="number"
+              label="Rating (0–5)"
+              helperText="Editorial/quality rating"
+              inputProps={{ min: 0, max: 5, step: '0.1' }}
+              {...register('rating')}
+            />
           </Grid>
           <Grid item xs={12}>
             <TextField select fullWidth label="Status" defaultValue="draft" {...register('status')}>

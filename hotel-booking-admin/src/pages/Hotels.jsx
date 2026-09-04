@@ -38,7 +38,7 @@ export default function Hotels() {
 
   const openCreate = () => {
     setEditing(null);
-    reset({ name: '', address: '', city: '', country: '', basePrice: '', starRating: '', status: 'draft', amenityIds: [], important: false });
+    reset({ name: '', address: '', city: '', country: '', basePrice: '', starRating: '', rating: '', ratedPrice: '', status: 'draft', amenityIds: [], important: false });
     setDialogOpen(true);
   };
 
@@ -54,6 +54,8 @@ export default function Hotels() {
       country: full.country,
       basePrice: full.base_price,
       starRating: full.star_rating || '',
+      rating: full.rating || '',
+      ratedPrice: full.rated_price || '',
       status: full.status,
       description: full.description || '',
       amenityIds: (full.amenities || []).map((a) => a.id),
@@ -69,6 +71,8 @@ export default function Hotels() {
         ...values,
         basePrice: Number(values.basePrice),
         starRating: values.starRating ? Number(values.starRating) : undefined,
+        rating: values.rating !== '' && values.rating != null ? Number(values.rating) : undefined,
+        ratedPrice: values.ratedPrice !== '' && values.ratedPrice != null ? Number(values.ratedPrice) : undefined,
         amenityIds: values.amenityIds || [],
       };
       if (editing) {
@@ -115,7 +119,7 @@ export default function Hotels() {
     },
     { key: 'city', label: 'City', render: (r) => `${r.city}, ${r.country}` },
     { key: 'star_rating', label: 'Rating', render: (r) => <Rating value={r.star_rating || 0} readOnly size="small" /> },
-    { key: 'base_price', label: 'Base price', render: (r) => <span className="mono">${Number(r.base_price).toFixed(2)}</span> },
+    { key: 'base_price', label: 'Base price', render: (r) => <span className="mono">{Number(r.base_price).toFixed(2)} KWD</span> },
     { key: 'status', label: 'Status', render: (r) => <StatusChip status={r.status} /> },
     {
       key: 'actions',
@@ -176,10 +180,30 @@ export default function Hotels() {
             <TextField fullWidth label="Country" {...register('country', { required: true })} error={!!errors.country} />
           </Grid>
           <Grid item xs={4}>
-            <TextField fullWidth type="number" label="Base price / night" {...register('basePrice', { required: true })} error={!!errors.basePrice} />
+            <TextField fullWidth type="number" label="Base price / night (KWD)" {...register('basePrice', { required: true })} error={!!errors.basePrice} />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              fullWidth
+              type="number"
+              label="Rated price (KWD)"
+              helperText="Optional secondary price, e.g. weekend rate incl. fees"
+              inputProps={{ min: 0, step: '0.01' }}
+              {...register('ratedPrice')}
+            />
           </Grid>
           <Grid item xs={4}>
             <TextField fullWidth type="number" label="Star rating" inputProps={{ min: 0, max: 5 }} {...register('starRating')} />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              fullWidth
+              type="number"
+              label="Rating (0–5)"
+              helperText="Editorial/quality rating, e.g. 4.5"
+              inputProps={{ min: 0, max: 5, step: '0.1' }}
+              {...register('rating')}
+            />
           </Grid>
           <Grid item xs={4}>
             <TextField select fullWidth label="Status" defaultValue="draft" {...register('status')}>

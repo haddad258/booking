@@ -70,7 +70,7 @@ module.exports = {
   imageServerUrl: process.env.IMAGE_SERVER_URL || null,
 
   defaults: {
-    currency: process.env.DEFAULT_CURRENCY || 'USD',
+    currency: process.env.DEFAULT_CURRENCY || 'KWD',
     language: process.env.DEFAULT_LANGUAGE || 'en',
   },
 

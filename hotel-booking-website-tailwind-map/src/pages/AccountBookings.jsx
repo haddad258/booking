@@ -5,6 +5,7 @@ import { apiErrorMessage } from '../services/api';
 import Spinner from '../components/ui/Spinner';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
+import { formatPrice } from '../lib/currency';
 
 export default function AccountBookings() {
   const [bookings, setBookings] = useState([]);
@@ -48,7 +49,7 @@ export default function AccountBookings() {
                 <p className="text-sm text-ink/60 dark:text-white/60">
                   {b.bookable_type === 'hotel' ? 'Hotel' : 'Chalet'} · {format(new Date(b.check_in), 'MMM d')} → {format(new Date(b.check_out), 'MMM d, yyyy')}
                 </p>
-                <p className="text-sm font-bold text-ink dark:text-white">${Number(b.total_price).toFixed(2)}</p>
+                <p className="text-sm font-bold text-ink dark:text-white">{formatPrice(b.total_price)}</p>
               </div>
               <div className="flex flex-col items-end gap-2">
                 <Badge status={b.status} />

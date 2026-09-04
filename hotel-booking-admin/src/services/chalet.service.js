@@ -32,4 +32,35 @@ async function setAvailability(chaletId, entries) {
   return data.data;
 }
 
-export default { ...base, uploadImages, removeImage, reorderImages, setCoverImage, setAvailability };
+async function listDescriptions(chaletId) {
+  const { data } = await api.get(`/chalets/${chaletId}/descriptions`);
+  return data.data;
+}
+
+async function saveDescription(chaletId, payload) {
+  const { data } = await api.post(`/chalets/${chaletId}/descriptions`, payload);
+  return data.data;
+}
+
+async function setDefaultDescription(chaletId, descriptionId) {
+  const { data } = await api.put(`/chalets/${chaletId}/descriptions/${descriptionId}/default`);
+  return data.data;
+}
+
+async function deleteDescription(chaletId, descriptionId) {
+  const { data } = await api.delete(`/chalets/${chaletId}/descriptions/${descriptionId}`);
+  return data.data;
+}
+
+export default {
+  ...base,
+  uploadImages,
+  removeImage,
+  reorderImages,
+  setCoverImage,
+  setAvailability,
+  listDescriptions,
+  saveDescription,
+  setDefaultDescription,
+  deleteDescription,
+};

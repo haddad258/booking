@@ -30,8 +30,10 @@ async function createChalet(payload, adminId) {
       capacity: payload.capacity,
       bedrooms: payload.bedrooms,
       bathrooms: payload.bathrooms || 1,
+      rating: payload.rating != null ? payload.rating : null,
+      rated_price: payload.ratedPrice != null ? payload.ratedPrice : null,
       base_price: payload.basePrice,
-      currency: payload.currency || 'USD',
+      currency: payload.currency || 'KWD',
       status: payload.status || 'draft',
       important: payload.important === true,
       created_by: adminId,
@@ -73,15 +75,16 @@ async function getChaletById(id) {
   const chalet = await db('chalets').where({ id }).first();
   if (!chalet) throw ApiError.notFound('Chalet not found');
 
-  const [images, amenities] = await Promise.all([
+  const [images, amenities, descriptions] = await Promise.all([
     db('chalet_images').where({ chalet_id: id }).orderBy('sort_order'),
     db('chalet_amenities as ca')
       .join('amenities as a', 'a.id', 'ca.amenity_id')
       .where('ca.chalet_id', id)
       .select('a.*'),
+    db('chalet_descriptions').where({ chalet_id: id }).select('id', 'language', 'description', 'is_default').orderBy('language'),
   ]);
 
-  return { ...chalet, images, amenities };
+  return { ...chalet, images, amenities, descriptions };
 }
 
 async function updateChalet(id, payload) {
@@ -100,6 +103,8 @@ async function updateChalet(id, payload) {
     capacity: 'capacity',
     bedrooms: 'bedrooms',
     bathrooms: 'bathrooms',
+    rating: 'rating',
+    ratedPrice: 'rated_price',
     basePrice: 'base_price',
     currency: 'currency',
     status: 'status',
@@ -222,6 +227,57 @@ async function setAvailability(chaletId, entries) {
   return db('chalet_availability').where({ chalet_id: chaletId }).orderBy('date');
 }
 
+/** Multilingual description management (Requirement #7). Mirrors hotel.service's equivalent. */
+async function listDescriptions(chaletId) {
+  return db('chalet_descriptions').where({ chalet_id: chaletId }).orderBy('language');
+}
+
+async function upsertDescription(chaletId, { language, description, isDefault }) {
+  const chalet = await db('chalets').where({ id: chaletId }).first();
+  if (!chalet) throw ApiError.notFound('Chalet not found');
+  if (!language || !description) throw ApiError.badRequest('language and description are required');
+
+  return db.transaction(async (trx) => {
+    const existingCount = await trx('chalet_descriptions').where({ chalet_id: chaletId }).count('* as c').first();
+    const shouldBeDefault = isDefault === true || Number(existingCount.c) === 0;
+
+    if (shouldBeDefault) {
+      await trx('chalet_descriptions').where({ chalet_id: chaletId }).update({ is_default: false });
+    }
+
+    const [row] = await trx('chalet_descriptions')
+      .insert({ chalet_id: chaletId, language, description, is_default: shouldBeDefault })
+      .onConflict(['chalet_id', 'language'])
+      .merge(['description', 'is_default', 'updated_at'])
+      .returning('*');
+    return row;
+  });
+}
+
+async function setDefaultDescription(chaletId, descriptionId) {
+  const row = await db('chalet_descriptions').where({ id: descriptionId, chalet_id: chaletId }).first();
+  if (!row) throw ApiError.notFound('Description not found');
+
+  await db.transaction(async (trx) => {
+    await trx('chalet_descriptions').where({ chalet_id: chaletId }).update({ is_default: false });
+    await trx('chalet_descriptions').where({ id: descriptionId }).update({ is_default: true });
+  });
+  return listDescriptions(chaletId);
+}
+
+async function deleteDescription(chaletId, descriptionId) {
+  const row = await db('chalet_descriptions').where({ id: descriptionId, chalet_id: chaletId }).first();
+  if (!row) throw ApiError.notFound('Description not found');
+
+  await db('chalet_descriptions').where({ id: descriptionId }).del();
+
+  if (row.is_default) {
+    const next = await db('chalet_descriptions').where({ chalet_id: chaletId }).orderBy('language').first();
+    if (next) await db('chalet_descriptions').where({ id: next.id }).update({ is_default: true });
+  }
+  return listDescriptions(chaletId);
+}
+
 module.exports = {
   createChalet,
   listChalets,
@@ -234,4 +290,8 @@ module.exports = {
   setCoverImage,
   checkAvailability,
   setAvailability,
+  listDescriptions,
+  upsertDescription,
+  setDefaultDescription,
+  deleteDescription,
 };

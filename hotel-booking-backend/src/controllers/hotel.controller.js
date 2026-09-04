@@ -75,6 +75,27 @@ const setAvailability = catchAsync(async (req, res) => {
   ApiResponse.send(res, { message: 'Availability updated', data: availability });
 });
 
+// --- Multilingual descriptions (Requirement #7) ---
+const listDescriptions = catchAsync(async (req, res) => {
+  const descriptions = await hotelService.listDescriptions(req.params.id);
+  ApiResponse.send(res, { data: descriptions });
+});
+
+const upsertDescription = catchAsync(async (req, res) => {
+  const description = await hotelService.upsertDescription(req.params.id, req.body);
+  ApiResponse.send(res, { statusCode: 201, message: 'Description saved', data: description });
+});
+
+const setDefaultDescription = catchAsync(async (req, res) => {
+  const descriptions = await hotelService.setDefaultDescription(req.params.id, req.params.descriptionId);
+  ApiResponse.send(res, { message: 'Default description updated', data: descriptions });
+});
+
+const deleteDescription = catchAsync(async (req, res) => {
+  const descriptions = await hotelService.deleteDescription(req.params.id, req.params.descriptionId);
+  ApiResponse.send(res, { message: 'Description deleted', data: descriptions });
+});
+
 module.exports = {
   list,
   getById,
@@ -90,4 +111,8 @@ module.exports = {
   deleteRoom,
   checkAvailability,
   setAvailability,
+  listDescriptions,
+  upsertDescription,
+  setDefaultDescription,
+  deleteDescription,
 };

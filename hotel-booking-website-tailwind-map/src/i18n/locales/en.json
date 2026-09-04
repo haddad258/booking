@@ -42,6 +42,8 @@
     "guests": "Guests",
     "noResults": "No properties match your search yet.",
     "perNight": "/ night",
+    "startingFrom": "From",
+    "ratedPrice": "Rated price",
     "viewDetails": "View details"
   },
   "detail": {
