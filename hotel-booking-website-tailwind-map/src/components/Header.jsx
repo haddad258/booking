@@ -58,9 +58,9 @@ export default function Header() {
         </button>
 
         <RouterLink to="/" className="mr-6 flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-brand-800">
+          {/* <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-brand-800">
             <MapIcon className="h-5 w-5 text-gold-300" />
-          </span>
+          </span> */}
           <img
             src={logo}
             alt="Logo"

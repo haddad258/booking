@@ -2,6 +2,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { MapIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import Button from './ui/Button';
+import logo from "../assets/iconlogo.png";
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -12,9 +13,15 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 md:grid-cols-12">
           <div className="col-span-2 sm:col-span-4 md:col-span-5">
             <div className="mb-3 flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-gold-400 to-gold-500">
+              {/* <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-gold-400 to-gold-500">
                 <MapIcon className="h-4.5 w-4.5 text-brand-900" />
-              </span>
+              </span> */}
+
+              <img
+                src={logo}
+                alt="Logo"
+                className="h-9 w-9 object-contain"
+              />
               <span className="font-display text-xl font-semibold">{t('app.name')}</span>
             </div>
             <p className="max-w-xs text-sm text-white/60">{t('home.heroSubtitle')}</p>
